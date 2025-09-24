@@ -34,13 +34,14 @@ export const startThread = action({
         {
           role: "system",
           content:
-            "Generate a concise, descriptive title (max 30 characters) for this conversation based on the user's first message. Only respond with the title, nothing else.",
+            "Generate a concise, descriptive title for this conversation based on the user's first message. Only respond with the title, nothing else.",
         },
         {
           role: "user",
           content: args.userMessage,
         },
       ],
+      maxOutputTokens: 10,
     });
 
     const generatedTitle = titleResult.text.trim();
