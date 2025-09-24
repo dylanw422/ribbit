@@ -29,15 +29,15 @@ export default function DashboardPage() {
       party: isWoke ? "liberal" : "conservative",
     });
 
+    setUserText("");
+
     if (postThreadRes) {
       router.push(`/dashboard/${postThreadRes.threadId}`);
       const aiCallRes = await aiCall({
         messageId: postThreadRes.assistantMessageId,
-        userMessage: userText,
+        threadId: postThreadRes.threadId,
       });
     }
-
-    setUserText("");
   };
 
   return (

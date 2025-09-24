@@ -2,7 +2,7 @@
 
 import { api } from "@ribbit/backend/convex/_generated/api";
 import { useAction, useMutation, useQuery } from "convex/react";
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 import type { Id } from "@ribbit/backend/convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import CustomTextArea from "@/components/textarea";
@@ -27,14 +27,14 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
       party: isWoke ? "liberal" : "conservative",
     });
 
+    setUserText("");
+
     if (addMessageRes) {
       const streamAssistantRes = await streamAssistant({
         messageId: addMessageRes.assistantMessageId,
-        userMessage: userText,
+        threadId: threadId,
       });
     }
-
-    setUserText("");
   };
 
   return (

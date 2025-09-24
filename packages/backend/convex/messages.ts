@@ -73,10 +73,11 @@ export const addMessageToThread = mutation({
 });
 
 // --- Stream assistant reply ---
+// --- Stream assistant reply with full conversation context ---
 export const streamAssistant = action({
   args: {
     messageId: v.id("messages"), // assistant message id
-    userMessage: v.string(),
+    threadId: v.id("threads"), // add threadId to get conversation history
   },
   handler: async (ctx, args) => {
     const venice = createOpenAICompatible({
@@ -86,16 +87,30 @@ export const streamAssistant = action({
       includeUsage: true,
     });
 
+    // Get the full conversation history from the thread
+    const messages = await ctx.runQuery(api.messages.getMessages, {
+      threadId: args.threadId,
+    });
+
+    // Filter out the current assistant message (which is just a placeholder)
+    // and convert to the format expected by the AI SDK
+    const conversationHistory = messages
+      .filter((msg) => msg._id !== args.messageId && msg.status === "done")
+      .map((msg) => ({
+        role: msg.role,
+        content: msg.text,
+      }));
+
     // Mark assistant message as "streaming"
     await ctx.runMutation(api.messages.updateMessageStatus, {
       messageId: args.messageId,
       status: "streaming",
     });
 
-    // Call Venice model
+    // Call Venice model with full conversation context
     const result = streamText({
       model: venice("venice-uncensored"),
-      messages: [{ role: "user", content: args.userMessage }],
+      messages: conversationHistory,
     });
 
     let index = 0;
