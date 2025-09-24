@@ -2,43 +2,117 @@ import { mutation, action, query } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { streamText } from "ai";
+import { streamText, generateText } from "ai";
+import { Id } from "./_generated/dataModel";
 
-// --- Mutation to start a new thread ---
-export const startThread = mutation({
+// --- Action to start a new thread with AI-generated title ---
+export const startThread = action({
   args: {
     userId: v.string(),
-    title: v.string(),
     userMessage: v.string(),
     party: v.union(v.literal("liberal"), v.literal("conservative")),
   },
-  handler: async (ctx, args) => {
-    // 1. Create new thread
-    const threadId = await ctx.db.insert("threads", {
+  handler: async (
+    ctx,
+    args
+  ): Promise<{
+    threadId: Id<"threads">;
+    userMessageId: Id<"messages">;
+    assistantMessageId: Id<"messages">;
+  }> => {
+    const venice = createOpenAICompatible({
+      name: "venice",
+      apiKey: process.env.VENICE_API_KEY,
+      baseURL: "https://api.venice.ai/api/v1",
+      includeUsage: true,
+    });
+
+    // Generate title using AI
+    const titleResult = await generateText({
+      model: venice("venice-uncensored"),
+      messages: [
+        {
+          role: "system",
+          content:
+            "Generate a concise, descriptive title (max 30 characters) for this conversation based on the user's first message. Only respond with the title, nothing else.",
+        },
+        {
+          role: "user",
+          content: args.userMessage,
+        },
+      ],
+    });
+
+    const generatedTitle = titleResult.text.trim();
+
+    // 1. Create new thread with generated title
+    const threadId = await ctx.runMutation(api.messages.createThread, {
+      title: generatedTitle,
+      userId: args.userId,
+    });
+
+    // 2. Insert user message
+    const userMessageId = await ctx.runMutation(api.messages.insertUserMessage, {
+      threadId,
+      userMessage: args.userMessage,
+      party: args.party,
+    });
+
+    // 3. Insert assistant placeholder
+    const assistantMessageId = await ctx.runMutation(api.messages.insertAssistantPlaceholder, {
+      threadId,
+      party: args.party,
+    });
+
+    return { threadId, userMessageId, assistantMessageId };
+  },
+});
+
+// --- Helper mutations (these need to be added to support the refactored startThread) ---
+export const createThread = mutation({
+  args: {
+    userId: v.string(),
+    title: v.string(),
+  },
+  handler: async (ctx, args): Promise<Id<"threads">> => {
+    return await ctx.db.insert("threads", {
       title: args.title,
       userId: args.userId,
       archived: false,
     });
+  },
+});
 
-    // 2. Insert user message
-    const userMessageId = await ctx.db.insert("messages", {
-      threadId,
+export const insertUserMessage = mutation({
+  args: {
+    threadId: v.id("threads"),
+    userMessage: v.string(),
+    party: v.union(v.literal("liberal"), v.literal("conservative")),
+  },
+  handler: async (ctx, args): Promise<Id<"messages">> => {
+    return await ctx.db.insert("messages", {
+      threadId: args.threadId,
       role: "user",
       party: args.party,
       text: args.userMessage,
       status: "done",
     });
+  },
+});
 
-    // 3. Insert assistant placeholder
-    const assistantMessageId = await ctx.db.insert("messages", {
-      threadId,
+export const insertAssistantPlaceholder = mutation({
+  args: {
+    threadId: v.id("threads"),
+    party: v.union(v.literal("liberal"), v.literal("conservative")),
+  },
+  handler: async (ctx, args): Promise<Id<"messages">> => {
+    return await ctx.db.insert("messages", {
+      threadId: args.threadId,
       role: "assistant",
       party: args.party,
       text: "",
       status: "pending",
     });
-
-    return { threadId, userMessageId, assistantMessageId };
   },
 });
 
@@ -49,7 +123,10 @@ export const addMessageToThread = mutation({
     userMessage: v.string(),
     party: v.union(v.literal("liberal"), v.literal("conservative")),
   },
-  handler: async (ctx, args) => {
+  handler: async (
+    ctx,
+    args
+  ): Promise<{ userMessageId: Id<"messages">; assistantMessageId: Id<"messages"> }> => {
     // 1. Insert user message
     const userMessageId = await ctx.db.insert("messages", {
       threadId: args.threadId,
@@ -72,14 +149,13 @@ export const addMessageToThread = mutation({
   },
 });
 
-// --- Stream assistant reply ---
 // --- Stream assistant reply with full conversation context ---
 export const streamAssistant = action({
   args: {
     messageId: v.id("messages"), // assistant message id
     threadId: v.id("threads"), // add threadId to get conversation history
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<void> => {
     const venice = createOpenAICompatible({
       name: "venice",
       apiKey: process.env.VENICE_API_KEY,
@@ -147,7 +223,7 @@ export const updateMessageStatus = mutation({
       v.literal("error")
     ),
   },
-  handler: async (ctx, { messageId, status }) => {
+  handler: async (ctx, { messageId, status }): Promise<void> => {
     await ctx.db.patch(messageId, { status });
   },
 });
@@ -158,8 +234,8 @@ export const appendChunk = mutation({
     content: v.string(),
     index: v.number(),
   },
-  handler: async (ctx, args) => {
-    await ctx.db.insert("messageChunks", {
+  handler: async (ctx, args): Promise<Id<"messageChunks">> => {
+    return await ctx.db.insert("messageChunks", {
       messageId: args.messageId,
       content: args.content,
       index: args.index,
@@ -169,7 +245,7 @@ export const appendChunk = mutation({
 
 export const finalizeMessage = mutation({
   args: { messageId: v.id("messages"), text: v.string() },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<void> => {
     // 1. Update the main message
     await ctx.db.patch(args.messageId, {
       text: args.text,

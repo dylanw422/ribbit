@@ -13,7 +13,7 @@ export default function DashboardPage() {
   const [userText, setUserText] = useState("");
   const [isWoke, setIsWoke] = useState(false);
 
-  const postThread = useMutation(api.messages.startThread);
+  const postThread = useAction(api.messages.startThread);
   const aiCall = useAction(api.messages.streamAssistant);
 
   const userId = data?.user?.id;
@@ -24,7 +24,6 @@ export default function DashboardPage() {
 
     const postThreadRes = await postThread({
       userId: userId,
-      title: userText.slice(0, 25),
       userMessage: userText,
       party: isWoke ? "liberal" : "conservative",
     });
