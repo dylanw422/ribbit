@@ -27,7 +27,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent className="bg-black">
         <SidebarHeader>ribbit</SidebarHeader>
-        <SidebarGroup className="text-sm space-y-2">
+        <SidebarGroup className="text-sm space-y-4 pl-3">
           <Link href="/dashboard">
             <SidebarMenuItem>
               <AiFillMessage className="size-4" />
@@ -40,11 +40,15 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarGroup>
         <SidebarDivider />
-        <h1 className="text-xs font-bold text-neutral-500 pl-3">Conversations</h1>{" "}
-        <SidebarGroup className="text-sm space-y-2">
+        <h1 className="text-xs font-bold text-neutral-500 pl-3 font-mono tracking-widest">
+          CONVERSATIONS
+        </h1>{" "}
+        <SidebarGroup className="text-sm space-y-4 pl-3">
           {threads?.map((thread) => (
             <Link key={thread._id} href={`/dashboard/${thread._id}`}>
-              <SidebarMenuItem>{thread.title}</SidebarMenuItem>
+              <SidebarMenuItem>
+                <span className="block truncate">{thread.title}</span>
+              </SidebarMenuItem>
             </Link>
           ))}
         </SidebarGroup>
