@@ -59,6 +59,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
           userText={userText}
           setUserText={setUserText}
           handleSubmit={handleSubmit}
+          threadId={threadId}
         />
       </div>
     </div>
