@@ -1,16 +1,8 @@
 import { v } from "convex/values";
 import { api, components, internal } from "./_generated/api";
-import {
-  createThread,
-  listUIMessages,
-  saveMessage,
-  syncStreams,
-  vStreamArgs,
-} from "@convex-dev/agent";
+import { createThread, listUIMessages, syncStreams, vStreamArgs } from "@convex-dev/agent";
 import { action, internalAction, mutation, query } from "./_generated/server";
 import { agent } from "./agent";
-import { useMutation } from "convex/react";
-import { Id } from "./_generated/dataModel";
 import { paginationOptsValidator } from "convex/server";
 
 export const newThread = action({

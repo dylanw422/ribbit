@@ -13,7 +13,6 @@ import type * as agentInteractions from "../agentInteractions.js";
 import type * as auth from "../auth.js";
 import type * as healthCheck from "../healthCheck.js";
 import type * as http from "../http.js";
-import type * as messages from "../messages.js";
 import type * as privateData from "../privateData.js";
 import type * as tasks from "../tasks.js";
 
@@ -37,7 +36,6 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   healthCheck: typeof healthCheck;
   http: typeof http;
-  messages: typeof messages;
   privateData: typeof privateData;
   tasks: typeof tasks;
 }>;
