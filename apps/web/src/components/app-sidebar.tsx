@@ -12,7 +12,7 @@ import Link from "next/link";
 import SidebarDivider from "./ui/sidebar-divider";
 import { use } from "react";
 import { api } from "@ribbit/backend/convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { authClient } from "@/lib/auth-client";
 import { usePathname } from "next/navigation";
 
@@ -22,7 +22,7 @@ export function AppSidebar() {
   const { data } = authClient.useSession();
   const userId = data?.user?.id;
 
-  const threads = useQuery(api.messages.getThreads, {
+  const threads = useQuery(api.agentInteractions.allThreads, {
     userId: userId ?? "",
   });
 
@@ -47,9 +47,9 @@ export function AppSidebar() {
           CONVERSATIONS
         </h1>{" "}
         <SidebarGroup className="text-sm space-y-4 pl-3">
-          {threads
-            ?.sort((a, b) => b._creationTime - a._creationTime)
-            ?.map((thread) => (
+          {(threads?.threads?.page ?? [])
+            .sort((a, b) => b._creationTime - a._creationTime)
+            .map((thread) => (
               <Link key={thread._id} href={`/dashboard/${thread._id}`}>
                 <SidebarMenuItem
                   className={

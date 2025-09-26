@@ -19,19 +19,12 @@ export default function CustomTextArea({
   userText: string;
   setUserText: (userText: string) => void;
   handleSubmit: () => void;
-  threadId?: Id<"threads">;
+  threadId?: string;
 }) {
-  const messages = threadId ? useQuery(api.messages.getMessages, { threadId }) : null;
-  const lastMessage = messages?.[messages.length - 1];
-  const isDisabled =
-    userText.length === 0 ||
-    lastMessage?.status === "pending" ||
-    lastMessage?.status === "streaming";
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // prevent newline
-      if (!isDisabled) {
+      if (true) {
         handleSubmit();
       }
     }
@@ -58,11 +51,11 @@ export default function CustomTextArea({
           className="rounded-none bg-neutral-950/50 w-full p-2 text-sm resize-none pr-[60px]"
         />
         <button
-          disabled={isDisabled}
+          disabled={false}
           onClick={handleSubmit}
           className="absolute bottom-4 right-4 hover:cursor-pointer disabled:cursor-not-allowed"
         >
-          <AiOutlineArrowUp className={`size-8 p-1 ${isDisabled ? "opacity-50" : "opacity-100"}`} />
+          <AiOutlineArrowUp className={`size-8 p-1 ${true ? "opacity-50" : "opacity-100"}`} />
         </button>
       </div>
       <div className="flex justify-between items-center pt-2">

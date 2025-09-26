@@ -4,6 +4,7 @@ import type { Id } from "@ribbit/backend/convex/_generated/dataModel";
 import { AiOutlineCopy, AiOutlineDislike, AiOutlineExport, AiOutlineLike } from "react-icons/ai";
 import MarkdownRenderer from "./ui/markdown-renderer";
 import { Response } from "./ui/shadcn-io/ai/response";
+import { useSmoothText, type UIMessage } from "@convex-dev/agent/react";
 
 export default function Message({
   id,
@@ -11,23 +12,19 @@ export default function Message({
   text,
   status,
 }: {
-  id: Id<"messages">;
+  id: Id<"_storage">;
   role: "user" | "assistant" | "system";
   text: string;
   status: "pending" | "streaming" | "done" | "error";
 }) {
-  const chunks = useQuery(api.messages.getChunks, { messageId: id });
-
-  const displayText =
-    role === "assistant" && status === "streaming" && chunks
-      ? chunks.map((c) => c.content).join("")
-      : text;
-
+  const [visibleText] = useSmoothText(text, {
+    startStreaming: status === "streaming",
+  });
   return (
     <div
       className={`my-4 flex flex-col ${
         role === "assistant" ? "items-start" : "items-end"
-      } ${displayText.length > 0 ? "" : "opacity-0"}`}
+      } ${text.length > 0 ? "" : "opacity-0"}`}
     >
       <h1
         id="message-container"
@@ -35,7 +32,7 @@ export default function Message({
           role === "assistant" ? "bg-neutral-900" : "bg-black border"
         }`}
       >
-        <Response>{displayText}</Response>
+        <Response>{visibleText}</Response>
       </h1>
       {role === "assistant" && (
         <div className="mt-4 flex space-x-2 [&>*]:hover:cursor-pointer  text-neutral-400">

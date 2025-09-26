@@ -12,31 +12,21 @@ export default function DashboardPage() {
   const { data } = authClient.useSession();
   const [userText, setUserText] = useState("");
   const [isWoke, setIsWoke] = useState(false);
-
-  const postThread = useAction(api.messages.startThread);
-  const aiCall = useAction(api.messages.streamAssistant);
+  const newThread = useAction(api.agentInteractions.newThread);
+  const sendMessage = useAction(api.agentInteractions.continueThread);
+  const generateThreadTitle = useAction(api.agentInteractions.generateThreadTitle);
 
   const userId = data?.user?.id;
 
   const handleSubmit = async () => {
-    if (userText.length === 0) return;
     if (!userId) return;
-
-    const postThreadRes = await postThread({
-      userId: userId,
-      userMessage: userText,
-      party: isWoke ? "liberal" : "conservative",
+    const thread = await newThread({ userId, prompt: userText });
+    router.push(`/dashboard/${thread.threadId}`);
+    await sendMessage({
+      threadId: String(thread.threadId),
+      prompt: userText,
+      isFirstMessage: true,
     });
-
-    setUserText("");
-
-    if (postThreadRes) {
-      router.push(`/dashboard/${postThreadRes.threadId}`);
-      const aiCallRes = await aiCall({
-        messageId: postThreadRes.assistantMessageId,
-        threadId: postThreadRes.threadId,
-      });
-    }
   };
 
   return (
