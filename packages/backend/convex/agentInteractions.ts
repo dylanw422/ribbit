@@ -4,6 +4,7 @@ import { createThread, listUIMessages, syncStreams, vStreamArgs } from "@convex-
 import { action, internalAction, mutation, query } from "./_generated/server";
 import { agent } from "./agent";
 import { paginationOptsValidator } from "convex/server";
+import { rag } from "./rag";
 
 export const newThread = action({
   args: { userId: v.string(), prompt: v.string() },
@@ -20,8 +21,17 @@ export const newThread = action({
 export const continueThread = action({
   args: { threadId: v.string(), prompt: v.string(), isFirstMessage: v.optional(v.boolean()) },
   handler: async (ctx, args) => {
+    // authorize thread access
+    // await authorizeThreadAccess(ctx, args.threadId);
+    const context = await rag.search(ctx, {
+      namespace: "global",
+      query: args.prompt,
+      limit: 10,
+    });
+
     const { thread } = await agent.continueThread(ctx, { threadId: args.threadId });
     await thread.streamText({ prompt: args.prompt }, { saveStreamDeltas: true });
+
     if (args.isFirstMessage) {
       await ctx.runAction(api.agentInteractions.generateThreadTitle, { threadId: args.threadId });
     }
@@ -63,7 +73,7 @@ export const generateThreadTitle = action({
       { threadId },
       {
         prompt:
-          "Generate a concise, descriptive title for this conversation. Only respond with the title, nothing else.",
+          "Generate a concise, descriptive title for this conversation. Only respond with the title, nothing else. 3-5 words.",
         maxOutputTokens: 10,
       },
       { storageOptions: { saveMessages: "none" } }

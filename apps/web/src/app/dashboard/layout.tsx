@@ -1,12 +1,6 @@
 "use client";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Textarea } from "@/components/ui/textarea";
-import { api } from "@ribbit/backend/convex/_generated/api";
-import { useMutation } from "convex/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { AiOutlineArrowUp, AiOutlineRetweet } from "react-icons/ai";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

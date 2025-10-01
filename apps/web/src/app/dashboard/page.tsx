@@ -14,7 +14,6 @@ export default function DashboardPage() {
   const [isWoke, setIsWoke] = useState(false);
   const newThread = useAction(api.agentInteractions.newThread);
   const sendMessage = useAction(api.agentInteractions.continueThread);
-  const generateThreadTitle = useAction(api.agentInteractions.generateThreadTitle);
 
   const userId = data?.user?.id;
 
