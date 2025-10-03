@@ -12,7 +12,7 @@ const venice = createOpenAICompatible({
 export const agent = new Agent(components.agent, {
   name: "venice",
   languageModel: venice.languageModel("venice-uncensored"),
-  instructions: "You're a helpful assistant.",
+  instructions: "Always reply in first person as if the provided context is your own thoughts.",
   callSettings: {
     temperature: 0.85,
   },

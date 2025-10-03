@@ -23,14 +23,37 @@ export const continueThread = action({
   handler: async (ctx, args) => {
     // authorize thread access
     // await authorizeThreadAccess(ctx, args.threadId);
-    const context = await rag.search(ctx, {
-      namespace: "global",
-      query: args.prompt,
-      limit: 10,
+    // prompt llm to check if political or controversial
+    const isPolitical = await ctx.runAction(api.agentInteractions.conditionalRagSearch, {
+      prompt: args.prompt,
+      threadId: args.threadId,
     });
 
+    let contextMessages: any[] = [];
+    // if political or controversial, search rag for relevant documents
+    if (isPolitical) {
+      console.log(`${args.prompt} is political or controversial`);
+      const searchResults = await rag.search(ctx, {
+        namespace: "nick-transcripts",
+        query: args.prompt,
+        limit: 5,
+      });
+
+      if (searchResults && searchResults.entries.length > 0) {
+        contextMessages = searchResults.entries
+          .map((entry) => ({ role: "system", content: entry.text }))
+          .filter((msg) => !!msg.content);
+      }
+    }
+
+    // Build an enhanced prompt by prepending any system context to the user's prompt
     const { thread } = await agent.continueThread(ctx, { threadId: args.threadId });
-    await thread.streamText({ prompt: args.prompt }, { saveStreamDeltas: true });
+    await thread.streamText(
+      {
+        messages: [...contextMessages, { role: "user", content: args.prompt }],
+      },
+      { saveStreamDeltas: true }
+    );
 
     if (args.isFirstMessage) {
       await ctx.runAction(api.agentInteractions.generateThreadTitle, { threadId: args.threadId });
@@ -82,5 +105,23 @@ export const generateThreadTitle = action({
     const { thread } = await agent.continueThread(ctx, { threadId });
     await thread.updateMetadata({ title: result.text });
     return result.text;
+  },
+});
+
+export const conditionalRagSearch = action({
+  args: { prompt: v.string(), threadId: v.string() },
+  handler: async (ctx, args) => {
+    const result = await agent.generateText(
+      ctx,
+      { threadId: args.threadId },
+      {
+        prompt: `${args.prompt}\n\n Is this political or a socially controversial topic? Respond with only 'yes' or 'no'.`,
+      },
+      { storageOptions: { saveMessages: "none" } }
+    );
+
+    const normalized = result.text.trim().toLowerCase();
+
+    return normalized.startsWith("yes");
   },
 });
