@@ -5,7 +5,7 @@ import { api } from "@ribbit/backend/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import CustomTextArea from "@/components/textarea";
 import { authClient } from "@/lib/auth-client";
-import type { Id } from "@ribbit/backend/convex/_generated/dataModel";
+import { optimisticallySendMessage } from "@convex-dev/agent/react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -13,7 +13,9 @@ export default function DashboardPage() {
   const [userText, setUserText] = useState("");
   const [isWoke, setIsWoke] = useState(false);
   const newThread = useAction(api.agentInteractions.newThread);
-  const sendMessage = useAction(api.agentInteractions.continueThread);
+  const sendMessage = useMutation(
+    api.agentInteractions.initiateAsyncStreaming
+  ).withOptimisticUpdate(optimisticallySendMessage(api.agentInteractions.listThreadMessages));
 
   const userId = data?.user?.id;
 

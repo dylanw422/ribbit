@@ -4,7 +4,7 @@ import { useAction, useMutation, useQuery } from "convex/react";
 import { use, useRef, useState, useEffect } from "react";
 import CustomTextArea from "@/components/textarea";
 import Message from "@/components/message";
-import { useUIMessages } from "@convex-dev/agent/react";
+import { useUIMessages, optimisticallySendMessage } from "@convex-dev/agent/react";
 
 export default function ThreadPage({ params }: { params: Promise<{ thread: string }> }) {
   const { thread } = use(params);
@@ -17,7 +17,9 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
     { initialNumItems: 5000, stream: true }
   );
 
-  const sendMessage = useAction(api.agentInteractions.continueThread);
+  const sendMessage = useMutation(
+    api.agentInteractions.initiateAsyncStreaming
+  ).withOptimisticUpdate(optimisticallySendMessage(api.agentInteractions.listThreadMessages));
 
   const handleSubmit = async () => {
     sendMessage({ threadId: String(thread), prompt: userText });

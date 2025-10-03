@@ -18,8 +18,30 @@ export const newThread = action({
   },
 });
 
-export const continueThread = action({
-  args: { threadId: v.string(), prompt: v.string(), isFirstMessage: v.optional(v.boolean()) },
+export const initiateAsyncStreaming = mutation({
+  args: { prompt: v.string(), threadId: v.string(), isFirstMessage: v.optional(v.boolean()) },
+  handler: async (ctx, { prompt, threadId, isFirstMessage }) => {
+    const { messageId } = await agent.saveMessage(ctx, {
+      threadId,
+      prompt,
+      skipEmbeddings: true,
+    });
+    await ctx.scheduler.runAfter(0, internal.agentInteractions.continueThread, {
+      threadId,
+      prompt,
+      isFirstMessage,
+      promptMessageId: messageId,
+    });
+  },
+});
+
+export const continueThread = internalAction({
+  args: {
+    threadId: v.string(),
+    prompt: v.string(),
+    isFirstMessage: v.optional(v.boolean()),
+    promptMessageId: v.string(),
+  },
   handler: async (ctx, args) => {
     // authorize thread access
     // await authorizeThreadAccess(ctx, args.threadId);
@@ -30,7 +52,7 @@ export const continueThread = action({
     });
 
     let contextMessages: any[] = [];
-    // if political or controversial, search rag for relevant documents
+
     if (isPolitical) {
       console.log(`${args.prompt} is political or controversial`);
       const searchResults = await rag.search(ctx, {
@@ -46,10 +68,10 @@ export const continueThread = action({
       }
     }
 
-    // Build an enhanced prompt by prepending any system context to the user's prompt
     const { thread } = await agent.continueThread(ctx, { threadId: args.threadId });
     await thread.streamText(
       {
+        promptMessageId: args.promptMessageId,
         messages: [...contextMessages, { role: "user", content: args.prompt }],
       },
       { saveStreamDeltas: true }

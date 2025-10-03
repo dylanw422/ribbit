@@ -1,6 +1,8 @@
-import { components } from "./_generated/api";
+import { components, internal } from "./_generated/api";
 import { RAG } from "@convex-dev/rag";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { action, mutation } from "./_generated/server";
+import { v } from "convex/values";
 
 const venice = createOpenAICompatible({
   name: "venice",
