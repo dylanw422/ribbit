@@ -12,6 +12,7 @@ export default function DashboardPage() {
   const { data } = authClient.useSession();
   const [userText, setUserText] = useState("");
   const [isWoke, setIsWoke] = useState(false);
+
   const newThread = useAction(api.agentInteractions.newThread);
   const sendMessage = useMutation(
     api.agentInteractions.initiateAsyncStreaming

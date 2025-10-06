@@ -5,6 +5,7 @@ import { AiOutlineCopy, AiOutlineDislike, AiOutlineExport, AiOutlineLike } from 
 import MarkdownRenderer from "./ui/markdown-renderer";
 import { Response } from "./ui/shadcn-io/ai/response";
 import { useSmoothText, type UIMessage } from "@convex-dev/agent/react";
+import { Loader } from "lucide-react";
 
 export default function Message({
   id,

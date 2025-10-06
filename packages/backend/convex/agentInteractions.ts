@@ -56,15 +56,18 @@ export const continueThread = internalAction({
     if (isPolitical) {
       console.log(`${args.prompt} is political or controversial`);
       const searchResults = await rag.search(ctx, {
-        namespace: "nick-transcripts",
+        namespace: "nickjfuentes",
         query: args.prompt,
         limit: 5,
+        vectorScoreThreshold: 0.5,
       });
 
       if (searchResults && searchResults.entries.length > 0) {
         contextMessages = searchResults.entries
           .map((entry) => ({ role: "system", content: entry.text }))
           .filter((msg) => !!msg.content);
+
+        console.log("contextMessages", contextMessages);
       }
     }
 
