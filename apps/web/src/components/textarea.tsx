@@ -59,7 +59,7 @@ export default function CustomTextArea({
               ? "Your imagination is the limit..."
               : "Controversy is a form of communication..."
           }
-          className="rounded-none bg-neutral-950/50 w-full p-2 text-sm resize-none pr-[60px] pb-[40px]"
+          className="rounded-none bg-neutral-950/50 w-full p-2 text-sm resize-none pr-[60px]"
         />
         <button
           disabled={disabled}
@@ -68,19 +68,10 @@ export default function CustomTextArea({
         >
           <AiOutlineArrowUp className={`size-8 p-1 ${disabled ? "opacity-50" : "opacity-100"}`} />
         </button>
-        <div className="absolute bottom-0 left-2 text-neutral-400 pb-2">
-          <div className="relative flex items-center group hover:cursor-pointer">
-            <AiOutlinePicture
-              onClick={handleImageUpload}
-              className={`size-5 transition-colors duration-200 ${
-                imageUpload ? "text-purple-300" : ""
-              }`}
-            />
-          </div>
-        </div>
       </div>
       <div className="flex justify-between items-center pt-2">
         <h1 className="text-xs text-neutral-500">Shift + Enter to break</h1>
+        <h1 className="text-xs text-purple-300 font-mono font-semibold tracking-wider">UPGRADE</h1>
       </div>
     </div>
   );

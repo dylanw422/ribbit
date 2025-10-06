@@ -1,11 +1,7 @@
-import { api } from "@ribbit/backend/convex/_generated/api";
-import { useQuery } from "convex/react";
 import type { Id } from "@ribbit/backend/convex/_generated/dataModel";
 import { AiOutlineCopy, AiOutlineDislike, AiOutlineExport, AiOutlineLike } from "react-icons/ai";
-import MarkdownRenderer from "./ui/markdown-renderer";
 import { Response } from "./ui/shadcn-io/ai/response";
-import { useSmoothText, type UIMessage } from "@convex-dev/agent/react";
-import { Loader } from "lucide-react";
+import { useSmoothText } from "@convex-dev/agent/react";
 
 export default function Message({
   id,
@@ -21,6 +17,7 @@ export default function Message({
   const [visibleText] = useSmoothText(text, {
     startStreaming: status === "streaming",
   });
+
   return (
     <div
       className={`my-4 flex flex-col ${
