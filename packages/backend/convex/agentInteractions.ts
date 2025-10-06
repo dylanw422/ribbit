@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { api, components, internal } from "./_generated/api";
 import { createThread, listUIMessages, syncStreams, vStreamArgs } from "@convex-dev/agent";
 import { action, internalAction, mutation, query } from "./_generated/server";
-import { agent } from "./agent";
+import { agent, venice } from "./agent";
 import { paginationOptsValidator } from "convex/server";
 import { rag } from "./rag";
 
@@ -83,6 +83,41 @@ export const continueThread = internalAction({
     if (args.isFirstMessage) {
       await ctx.runAction(api.agentInteractions.generateThreadTitle, { threadId: args.threadId });
     }
+  },
+});
+
+export const replyWithImage = internalAction({
+  args: {
+    prompt: v.string(),
+    threadId: v.string(),
+  },
+  handler: async (ctx, { prompt, threadId }) => {
+    const url = "https://api.venice.ai/api/v1/image/generate";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.VENICE_API_KEY}`,
+      },
+      body: `{
+        "model": "hidream",
+        "prompt": "${prompt}",
+        "width": 1024,
+        "height": 1024,
+        "safe_mode": false,
+        "hide_watermark": true,
+        "cfg_scale": 7.0,
+        "style_preset": "Hyperrealism",
+        "negative_prompt": "",
+        "return_binary": false,
+        "format": "webp"
+      }`,
+    };
+
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    return { image: data.image.images[0] };
   },
 });
 

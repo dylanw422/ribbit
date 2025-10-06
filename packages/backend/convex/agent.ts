@@ -2,7 +2,7 @@ import { components } from "./_generated/api";
 import { Agent } from "@convex-dev/agent";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 
-const venice = createOpenAICompatible({
+export const venice = createOpenAICompatible({
   name: "venice",
   apiKey: process.env.VENICE_API_KEY,
   baseURL: "https://api.venice.ai/api/v1",
