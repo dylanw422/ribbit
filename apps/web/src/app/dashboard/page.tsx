@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import CustomTextArea from "@/components/textarea";
 import { authClient } from "@/lib/auth-client";
 import { optimisticallySendMessage } from "@convex-dev/agent/react";
+import { useParty } from "@/components/providers";
 
 export default function DashboardPage() {
   const router = useRouter();
   const { data } = authClient.useSession();
   const [userText, setUserText] = useState("");
-  const [isWoke, setIsWoke] = useState(false);
+  const { isWoke, setIsWoke } = useParty();
 
   const newThread = useAction(api.agentInteractions.newThread);
   const sendMessage = useMutation(

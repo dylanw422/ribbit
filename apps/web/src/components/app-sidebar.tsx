@@ -48,7 +48,7 @@ export function AppSidebar() {
         <h1 className="text-xs font-bold text-neutral-500 pl-3 font-mono tracking-widest">
           CONVERSATIONS
         </h1>{" "}
-        <SidebarGroup className="text-sm space-y-4 pl-3">
+        <SidebarGroup className="text-sm space-y-4 pl-3 overflow-y-auto">
           {(threads?.threads?.page ?? [])
             .sort((a, b) => b._creationTime - a._creationTime)
             .map((thread) => (

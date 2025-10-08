@@ -5,11 +5,12 @@ import { use, useRef, useState, useEffect } from "react";
 import CustomTextArea from "@/components/textarea";
 import Message from "@/components/message";
 import { useUIMessages, optimisticallySendMessage } from "@convex-dev/agent/react";
+import { useParty } from "@/components/providers";
 
 export default function ThreadPage({ params }: { params: Promise<{ thread: string }> }) {
   const { thread } = use(params);
   const [userText, setUserText] = useState("");
-  const [isWoke, setIsWoke] = useState(false);
+  const { isWoke, setIsWoke } = useParty();
 
   const { results, status, loadMore } = useUIMessages(
     api.agentInteractions.listThreadMessages,
