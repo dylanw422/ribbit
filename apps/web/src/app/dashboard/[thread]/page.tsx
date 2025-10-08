@@ -42,7 +42,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
           />
         ))}
       </div>
-      <div className="sticky bottom-0 pb-4 bg-black">
+      <div className="sticky bottom-0">
         <CustomTextArea
           isWoke={isWoke}
           setIsWoke={setIsWoke}

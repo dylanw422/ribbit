@@ -37,7 +37,7 @@ export default function DashboardPage() {
         <h1>No messages yet</h1>
       </div>
 
-      <div className="sticky bottom-0 pb-4 bg-black">
+      <div className="sticky bottom-0">
         <CustomTextArea
           isWoke={isWoke}
           setIsWoke={setIsWoke}

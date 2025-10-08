@@ -2,7 +2,6 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarMenuItem,
@@ -10,13 +9,14 @@ import {
 import { AiFillMessage, AiOutlineSearch } from "react-icons/ai";
 import Link from "next/link";
 import SidebarDivider from "./ui/sidebar-divider";
-import { use } from "react";
 import { api } from "@ribbit/backend/convex/_generated/api";
-import { useAction, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { authClient } from "@/lib/auth-client";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export function AppSidebar() {
+  const router = useRouter();
   const pathname = usePathname();
   const threadFromPath = pathname.split("/").pop();
   const { data } = authClient.useSession();
@@ -29,7 +29,9 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent className="bg-black">
-        <SidebarHeader>ribbit</SidebarHeader>
+        <SidebarHeader onClick={() => router.push("/")}>
+          <h1 className="font-mono font-bold tracking-widest">RIBBIT.</h1>
+        </SidebarHeader>
         <SidebarGroup className="text-sm space-y-4 pl-3">
           <Link href="/dashboard">
             <SidebarMenuItem>

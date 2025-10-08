@@ -1,7 +1,14 @@
 import type { Id } from "@ribbit/backend/convex/_generated/dataModel";
-import { AiOutlineCopy, AiOutlineDislike, AiOutlineExport, AiOutlineLike } from "react-icons/ai";
+import {
+  AiOutlineAlert,
+  AiOutlineCheck,
+  AiOutlineCopy,
+  AiOutlineFire,
+  AiOutlineSplitCells,
+} from "react-icons/ai";
 import { Response } from "./ui/shadcn-io/ai/response";
 import { useSmoothText } from "@convex-dev/agent/react";
+import { useState } from "react";
 
 export default function Message({
   id,
@@ -17,6 +24,13 @@ export default function Message({
   const [visibleText] = useSmoothText(text, {
     startStreaming: status === "streaming",
   });
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div
@@ -33,10 +47,14 @@ export default function Message({
         <Response>{visibleText}</Response>
       </h1>
       {role === "assistant" && (
-        <div className="mt-4 flex space-x-2 [&>*]:hover:cursor-pointer  text-neutral-400">
-          <AiOutlineCopy />
-          <AiOutlineLike />
-          <AiOutlineDislike />
+        <div className="mt-4 flex space-x-4 [&>*]:size-5 [&>*]:hover:cursor-pointer text-neutral-400">
+          {copied ? (
+            <AiOutlineCheck className="animate transition-all" />
+          ) : (
+            <AiOutlineCopy className="animate transition-all" onClick={handleCopy} />
+          )}
+          <AiOutlineSplitCells />
+          <AiOutlineFire className="text-orange-700" />
         </div>
       )}
     </div>

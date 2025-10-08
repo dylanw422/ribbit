@@ -340,7 +340,10 @@ export const Response = memo(
 
     return (
       <div
-        className={cn("size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0", className)}
+        className={cn(
+          "size-full whitespace-pre-wrap [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+          className
+        )}
         {...props}
       >
         <HardenedMarkdown
