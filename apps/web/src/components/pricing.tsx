@@ -2,13 +2,20 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { Button } from "./ui/button";
 
 export default function Pricing() {
-  const freeItems = ["10 messages per day", "20 threads", "Slow response times", "Limited context"];
+  const freeItems = [
+    "10 messages per day",
+    "20 threads",
+    "Slow response times",
+    "Limited context",
+    "Single bias per thread",
+  ];
 
   const proItems = [
     "Unlimited messages",
     "Unlimited threads",
     "Fast response times",
     "Full context",
+    "Dynamic bias per message",
     "Side-by-side comparison",
     "AI debate mode",
   ];

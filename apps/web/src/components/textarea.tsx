@@ -3,7 +3,6 @@ import { AiOutlineArrowUp, AiOutlineRetweet } from "react-icons/ai";
 import { Textarea } from "./ui/textarea";
 import { useScroll } from "./scroll-provider";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 
 export default function CustomTextArea({
   isWoke,
@@ -12,6 +11,7 @@ export default function CustomTextArea({
   setUserText,
   handleSubmit,
   messageStatus,
+  isPrivate,
 }: {
   isWoke: boolean;
   setIsWoke: (isWoke: boolean) => void;
@@ -19,6 +19,7 @@ export default function CustomTextArea({
   setUserText: (userText: string) => void;
   handleSubmit: () => void;
   messageStatus?: string;
+  isPrivate: boolean;
 }) {
   const { hasScroll, scrollHeight } = useScroll();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -87,6 +88,7 @@ export default function CustomTextArea({
         <Textarea
           value={userText}
           onKeyDown={handleKeyDown}
+          disabled={isPrivate}
           onChange={(e) => setUserText(e.target.value)}
           placeholder={"Controversy is a form of communication..."}
           className="max-h-[250px] rounded-none bg-neutral-950 w-full p-2 text-sm resize-none pr-[60px]"

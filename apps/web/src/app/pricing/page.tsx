@@ -1,6 +1,7 @@
 "use client";
 import Header from "@/components/header";
 import Pricing from "@/components/pricing";
+import { LightRays } from "@/components/ui/light-rays";
 
 export default function PricingPage() {
   return (

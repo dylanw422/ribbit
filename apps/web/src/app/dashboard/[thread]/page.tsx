@@ -6,11 +6,21 @@ import CustomTextArea from "@/components/textarea";
 import Message from "@/components/message";
 import { useUIMessages, optimisticallySendMessage } from "@convex-dev/agent/react";
 import { useParty } from "@/components/providers";
+import { authClient } from "@/lib/auth-client";
 
 export default function ThreadPage({ params }: { params: Promise<{ thread: string }> }) {
   const { thread } = use(params);
   const [userText, setUserText] = useState("");
   const { isWoke, setIsWoke } = useParty();
+  const { data } = authClient.useSession();
+  const userId = data?.user?.id;
+
+  const threads = useQuery(api.agentInteractions.allThreads, {
+    userId: userId ?? "",
+  });
+
+  // return false if thread is not in user's threads
+  const userHasThread = threads?.threads?.page?.some((t) => t._id === String(thread)) ?? false;
 
   const { results, status, loadMore } = useUIMessages(
     api.agentInteractions.listThreadMessages,
@@ -37,15 +47,21 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
     <div id="messages-container" className="flex flex-col h-full">
       {/* Messages */}
       <div className="flex-1">
-        {results?.map((message) => (
-          <Message
-            key={message.key}
-            id={message.id as any}
-            role={message.role}
-            text={message.text}
-            status={message.status as any}
-          />
-        ))}
+        {!userHasThread && (
+          <h1 className="w-full h-full flex justify-center items-center text-neutral-500">
+            This thread is private.
+          </h1>
+        )}
+        {userHasThread &&
+          results?.map((message) => (
+            <Message
+              key={message.key}
+              id={message.id as any}
+              role={message.role}
+              text={message.text}
+              status={message.status as any}
+            />
+          ))}
       </div>
       <div className="sticky bottom-0">
         <CustomTextArea
@@ -55,6 +71,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
           setUserText={setUserText}
           handleSubmit={handleSubmit}
           messageStatus={lastMessage?.status}
+          isPrivate={!userHasThread}
         />
       </div>
     </div>
