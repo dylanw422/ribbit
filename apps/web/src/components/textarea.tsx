@@ -1,8 +1,9 @@
 "use client";
-import { AiOutlineArrowUp, AiOutlinePicture, AiOutlineRetweet } from "react-icons/ai";
+import { AiOutlineArrowUp, AiOutlineRetweet } from "react-icons/ai";
 import { Textarea } from "./ui/textarea";
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useScroll } from "./scroll-provider";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
 export default function CustomTextArea({
   isWoke,
@@ -19,6 +20,27 @@ export default function CustomTextArea({
   handleSubmit: () => void;
   messageStatus?: string;
 }) {
+  const { hasScroll, scrollHeight } = useScroll();
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  useEffect(() => {
+    const scrollableElement = document.querySelector("#scroll-container");
+    if (!scrollableElement) return;
+
+    const handleScrollCheck = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollableElement;
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+      setShowScrollButton(distanceFromBottom > 200);
+    };
+
+    handleScrollCheck();
+    scrollableElement.addEventListener("scroll", handleScrollCheck);
+
+    return () => {
+      scrollableElement.removeEventListener("scroll", handleScrollCheck);
+    };
+  }, [hasScroll, scrollHeight]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // prevent newline
@@ -28,13 +50,29 @@ export default function CustomTextArea({
     }
   };
 
+  const handleScroll = () => {
+    // Find the scrollable element and scroll it to bottom
+    const scrollableElement = document.querySelector("#scroll-container");
+    if (scrollableElement) {
+      scrollableElement.scrollTo({ top: scrollHeight - 200, behavior: "smooth" });
+    }
+  };
+
   const disabled = userText.length === 0 || messageStatus === "streaming";
 
   return (
     <div className="w-full">
-      <div className="w-full flex justify-center mb-2 text-xs">
-        <button className="px-4 py-2 border bg-black">Scroll to bottom</button>
-      </div>
+      {hasScroll && showScrollButton && (
+        <div className="w-full flex justify-center mb-2 text-sm">
+          <button
+            onMouseDown={handleScroll}
+            className="px-4 py-2 border bg-neutral-950 font-bold hover:cursor-pointer text-xs"
+          >
+            SCROLL TO BOTTOM
+          </button>
+        </div>
+      )}
+
       <div className="py-2 px-4 border-l border-t border-r bg-neutral-950 text-sm mr-4 flex items-center justify-between gap-2">
         <h1
           className={`font-bold font-mono text-xs tracking-widest ${isWoke ? "text-blue-300" : "text-red-300"}`}
@@ -51,7 +89,7 @@ export default function CustomTextArea({
           onKeyDown={handleKeyDown}
           onChange={(e) => setUserText(e.target.value)}
           placeholder={"Controversy is a form of communication..."}
-          className="rounded-none bg-neutral-950 w-full p-2 text-sm resize-none pr-[60px]"
+          className="max-h-[250px] rounded-none bg-neutral-950 w-full p-2 text-sm resize-none pr-[60px]"
         />
         <button
           disabled={disabled}

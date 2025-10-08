@@ -28,6 +28,7 @@ export default function DashboardPage() {
       threadId: String(thread.threadId),
       prompt: userText,
       isFirstMessage: true,
+      party: isWoke ? "liberal" : "conservative",
     });
   };
 

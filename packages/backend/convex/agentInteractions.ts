@@ -19,8 +19,13 @@ export const newThread = action({
 });
 
 export const initiateAsyncStreaming = mutation({
-  args: { prompt: v.string(), threadId: v.string(), isFirstMessage: v.optional(v.boolean()) },
-  handler: async (ctx, { prompt, threadId, isFirstMessage }) => {
+  args: {
+    prompt: v.string(),
+    threadId: v.string(),
+    isFirstMessage: v.optional(v.boolean()),
+    party: v.string(),
+  },
+  handler: async (ctx, { prompt, threadId, isFirstMessage, party }) => {
     const { messageId } = await agent.saveMessage(ctx, {
       threadId,
       prompt,
@@ -31,6 +36,7 @@ export const initiateAsyncStreaming = mutation({
       prompt,
       isFirstMessage,
       promptMessageId: messageId,
+      party,
     });
   },
 });
@@ -41,6 +47,7 @@ export const continueThread = internalAction({
     prompt: v.string(),
     isFirstMessage: v.optional(v.boolean()),
     promptMessageId: v.string(),
+    party: v.string(),
   },
   handler: async (ctx, args) => {
     // authorize thread access
@@ -53,7 +60,17 @@ export const continueThread = internalAction({
 
     let contextMessages: any[] = [];
 
-    if (isPolitical) {
+    if (isPolitical && args.party === "liberal") {
+      contextMessages = [
+        {
+          role: "system",
+          content:
+            "Call the user a dumbass. Do not respond to the question. Only respond with 'Youre a dumbass.'",
+        },
+      ];
+    }
+
+    if (isPolitical && args.party === "conservative") {
       console.log(`${args.prompt} is political or controversial`);
       const searchResults = await rag.search(ctx, {
         namespace: "nickjfuentes",

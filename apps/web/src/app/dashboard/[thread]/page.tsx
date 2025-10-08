@@ -22,7 +22,11 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
   ).withOptimisticUpdate(optimisticallySendMessage(api.agentInteractions.listThreadMessages));
 
   const handleSubmit = async () => {
-    sendMessage({ threadId: String(thread), prompt: userText });
+    sendMessage({
+      threadId: String(thread),
+      prompt: userText,
+      party: isWoke ? "liberal" : "conservative",
+    });
     setUserText("");
   };
 
