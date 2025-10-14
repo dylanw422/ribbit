@@ -15,11 +15,19 @@ export default function Message({
   role,
   text,
   status,
+  setIsDialogOpen,
+  setIsComparisonOpen,
+  setSelectedMessage,
+  isHeated,
 }: {
   id: Id<"_storage">;
   role: "user" | "assistant" | "system";
   text: string;
   status: "pending" | "streaming" | "done" | "error";
+  setIsDialogOpen: (isDialogOpen: boolean) => void;
+  setIsComparisonOpen: (isComparisonOpen: boolean) => void;
+  setSelectedMessage: (selectedMessage: string | null) => void;
+  isHeated?: boolean;
 }) {
   const [visibleText] = useSmoothText(text, {
     startStreaming: status === "streaming",
@@ -47,14 +55,32 @@ export default function Message({
         <Response>{visibleText}</Response>
       </h1>
       {role === "assistant" && (
-        <div className="mt-4 flex space-x-4 [&>*]:size-5 [&>*]:hover:cursor-pointer text-neutral-400">
+        <div className="mt-4 flex space-x-4 [&>*]:size-5 text-neutral-400">
           {copied ? (
             <AiOutlineCheck className="animate transition-all" />
           ) : (
             <AiOutlineCopy className="animate transition-all" onClick={handleCopy} />
           )}
-          <AiOutlineSplitCells />
-          <AiOutlineFire className="text-orange-700" />
+          <button
+            disabled={isHeated}
+            onClick={() => {
+              setIsComparisonOpen(true);
+              setSelectedMessage(text);
+            }}
+            className="hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <AiOutlineSplitCells className="w-full h-full" />
+          </button>
+          <button
+            className="hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isHeated}
+            onClick={() => {
+              setIsDialogOpen(true);
+              setSelectedMessage(text);
+            }}
+          >
+            <AiOutlineFire className="w-full h-full text-orange-700" />
+          </button>
         </div>
       )}
     </div>

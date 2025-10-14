@@ -2,19 +2,31 @@ import { v } from "convex/values";
 import { api, components, internal } from "./_generated/api";
 import { createThread, listUIMessages, syncStreams, vStreamArgs } from "@convex-dev/agent";
 import { action, internalAction, mutation, query } from "./_generated/server";
-import { agent, venice } from "./agent";
+import { agent, debateAgent, venice } from "./agent";
 import { paginationOptsValidator } from "convex/server";
 import { rag } from "./rag";
 
 export const newThread = action({
-  args: { userId: v.string(), prompt: v.string() },
+  args: { userId: v.string(), prompt: v.string(), isHeated: v.optional(v.boolean()) },
   handler: async (ctx, args) => {
-    const threadId = await createThread(ctx, components.agent, {
-      userId: args.userId,
-      title: "New Conversation",
-    });
+    let threadId;
 
-    return { threadId };
+    if (args.isHeated) {
+      console.log("isHeated");
+      threadId = await createThread(ctx, components.agent, {
+        userId: args.userId,
+        title: "New Debate",
+      });
+
+      await ctx.runMutation(api.heated.setHeated, { threadId });
+    } else {
+      threadId = await createThread(ctx, components.agent, {
+        userId: args.userId,
+        title: "New Conversation",
+      });
+    }
+
+    return { threadId, isHeated: args.isHeated };
   },
 });
 
@@ -24,8 +36,9 @@ export const initiateAsyncStreaming = mutation({
     threadId: v.string(),
     isFirstMessage: v.optional(v.boolean()),
     party: v.string(),
+    debate: v.optional(v.boolean()),
   },
-  handler: async (ctx, { prompt, threadId, isFirstMessage, party }) => {
+  handler: async (ctx, { prompt, threadId, isFirstMessage, party, debate }) => {
     const { messageId } = await agent.saveMessage(ctx, {
       threadId,
       prompt,
@@ -37,6 +50,7 @@ export const initiateAsyncStreaming = mutation({
       isFirstMessage,
       promptMessageId: messageId,
       party,
+      debate,
     });
   },
 });
@@ -48,11 +62,13 @@ export const continueThread = internalAction({
     isFirstMessage: v.optional(v.boolean()),
     promptMessageId: v.string(),
     party: v.string(),
+    debate: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     // authorize thread access
     // await authorizeThreadAccess(ctx, args.threadId);
     // prompt llm to check if political or controversial
+    const aiAgent = args.debate ? debateAgent : agent;
     const isPolitical = await ctx.runAction(api.agentInteractions.conditionalRagSearch, {
       prompt: args.prompt,
       threadId: args.threadId,
@@ -88,7 +104,7 @@ export const continueThread = internalAction({
       }
     }
 
-    const { thread } = await agent.continueThread(ctx, { threadId: args.threadId });
+    const { thread } = await aiAgent.continueThread(ctx, { threadId: args.threadId });
     await thread.streamText(
       {
         promptMessageId: args.promptMessageId,
@@ -99,6 +115,9 @@ export const continueThread = internalAction({
 
     if (args.isFirstMessage) {
       await ctx.runAction(api.agentInteractions.generateThreadTitle, { threadId: args.threadId });
+      if (args.debate) {
+        await ctx.runAction(api.heated.generateDebateSubject, { threadId: args.threadId });
+      }
     }
   },
 });

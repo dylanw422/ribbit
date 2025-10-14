@@ -7,6 +7,7 @@ import { ScrollProvider, useScroll } from "@/components/scroll-provider";
 
 function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const { setHasScroll, setScrollHeight } = useScroll();
 
   useEffect(() => {
@@ -48,7 +49,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     <>
       <AppSidebar />
       <div className="flex w-full h-screen relative overflow-hidden">
-        <SidebarTrigger className="hover:cursor-pointer fixed" />
+        <SidebarTrigger className="hover:cursor-pointer fixed z-20" />
         <div
           id="scroll-container"
           ref={scrollRef}
@@ -56,6 +57,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         >
           <Particles className="fixed w-full h-full" color="#6e6e6e" />
           <div className="md:w-5/6 w-full px-8 z-10">{children}</div>
+          <div ref={bottomRef} />
         </div>
       </div>
     </>

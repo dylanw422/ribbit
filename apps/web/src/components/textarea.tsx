@@ -12,6 +12,7 @@ export default function CustomTextArea({
   handleSubmit,
   messageStatus,
   isPrivate,
+  isHeated,
 }: {
   isWoke: boolean;
   setIsWoke: (isWoke: boolean) => void;
@@ -19,10 +20,14 @@ export default function CustomTextArea({
   setUserText: (userText: string) => void;
   handleSubmit: () => void;
   messageStatus?: string;
-  isPrivate: boolean;
+  isPrivate?: boolean;
+  isHeated?: boolean;
 }) {
   const { hasScroll, scrollHeight } = useScroll();
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const disabled = userText.length === 0 || messageStatus === "streaming";
+
+  console.log(isHeated);
 
   useEffect(() => {
     const scrollableElement = document.querySelector("#scroll-container");
@@ -45,7 +50,7 @@ export default function CustomTextArea({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // prevent newline
-      if (true) {
+      if (!disabled) {
         handleSubmit();
       }
     }
@@ -58,8 +63,6 @@ export default function CustomTextArea({
       scrollableElement.scrollTo({ top: scrollHeight - 200, behavior: "smooth" });
     }
   };
-
-  const disabled = userText.length === 0 || messageStatus === "streaming";
 
   return (
     <div className="w-full">
@@ -76,11 +79,15 @@ export default function CustomTextArea({
 
       <div className="py-2 px-4 border-l border-t border-r bg-neutral-950 text-sm mr-4 flex items-center justify-between gap-2">
         <h1
-          className={`font-bold font-mono text-xs tracking-widest ${isWoke ? "text-blue-300" : "text-red-300"}`}
+          className={`font-bold font-mono text-xs tracking-widest ${isWoke ? "text-blue-400" : "text-red-400"} ${isHeated ? "opacity-50" : ""}`}
         >
           {isWoke ? "LIBERAL" : "CONSERVATIVE"}
         </h1>
-        <button className="hover:cursor-pointer" onClick={() => setIsWoke(!isWoke)}>
+        <button
+          disabled={isHeated}
+          className="hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => setIsWoke(!isWoke)}
+        >
           <AiOutlineRetweet className="size-4" />
         </button>
       </div>
@@ -103,7 +110,7 @@ export default function CustomTextArea({
       </div>
       <div className="flex justify-between items-center pt-2 bg-black pb-4">
         <h1 className="text-xs text-neutral-500">Shift + Enter to break</h1>
-        <h1 className="text-xs text-purple-300 font-mono font-semibold tracking-wider">UPGRADE</h1>
+        <h1 className="text-xs text-purple-400 font-mono font-semibold tracking-wider">UPGRADE</h1>
       </div>
     </div>
   );
