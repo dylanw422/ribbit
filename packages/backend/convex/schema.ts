@@ -7,8 +7,13 @@ export default defineSchema({
     debateSubject: v.string(),
   }),
   message_bias: defineTable({
+    threadId: v.string(),
     messageId: v.string(),
     bias: v.string(),
-    comparisonResponse: v.string(),
+    comparisonResponse: v.optional(v.string()),
+  }),
+  political_messages: defineTable({
+    threadId: v.string(),
+    messageId: v.string(),
   }),
 });

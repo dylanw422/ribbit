@@ -1,6 +1,12 @@
 import { v } from "convex/values";
 import { api, components, internal } from "./_generated/api";
-import { createThread, listUIMessages, syncStreams, vStreamArgs } from "@convex-dev/agent";
+import {
+  createThread,
+  listMessages,
+  listUIMessages,
+  syncStreams,
+  vStreamArgs,
+} from "@convex-dev/agent";
 import { action, internalAction, mutation, query } from "./_generated/server";
 import { agent, debateAgent, venice } from "./agent";
 import { paginationOptsValidator } from "convex/server";
@@ -76,20 +82,9 @@ export const continueThread = internalAction({
 
     let contextMessages: any[] = [];
 
-    if (isPolitical && args.party === "liberal") {
-      contextMessages = [
-        {
-          role: "system",
-          content:
-            "Call the user a dumbass. Do not respond to the question. Only respond with 'Youre a dumbass.'",
-        },
-      ];
-    }
-
-    if (isPolitical && args.party === "conservative") {
-      console.log(`${args.prompt} is political or controversial`);
+    if (isPolitical) {
       const searchResults = await rag.search(ctx, {
-        namespace: "nickjfuentes",
+        namespace: args.party === "conservative" ? "nickjfuentes" : "hasanabi",
         query: args.prompt,
         limit: 5,
         vectorScoreThreshold: 0.5,
@@ -105,7 +100,7 @@ export const continueThread = internalAction({
     }
 
     const { thread } = await aiAgent.continueThread(ctx, { threadId: args.threadId });
-    await thread.streamText(
+    const response = await thread.streamText(
       {
         promptMessageId: args.promptMessageId,
         messages: [...contextMessages, { role: "user", content: args.prompt }],
@@ -118,6 +113,29 @@ export const continueThread = internalAction({
       if (args.debate) {
         await ctx.runAction(api.heated.generateDebateSubject, { threadId: args.threadId });
       }
+    }
+
+    // RECORD BIAS and POLITICAL MESSAGES IN CONVEX
+    const messages = await listUIMessages(ctx, components.agent, {
+      threadId: args.threadId,
+      paginationOpts: { cursor: null, numItems: 1 },
+    });
+    const lastMessageId = messages.page[0].id;
+    await ctx.runMutation(api.messages.insertMessage, {
+      threadId: args.threadId,
+      messageId: args.promptMessageId,
+      bias: args.party,
+    });
+    await ctx.runMutation(api.messages.insertMessage, {
+      threadId: args.threadId,
+      messageId: String(lastMessageId),
+      bias: args.party,
+    });
+    if (isPolitical) {
+      await ctx.runMutation(api.political.insertMessage, {
+        threadId: args.threadId,
+        messageId: String(lastMessageId),
+      });
     }
   },
 });
@@ -157,7 +175,7 @@ export const replyWithImage = internalAction({
   },
 });
 
-// --- Mutations ---
+// --- Mutations | Queries ---
 export const allThreads = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
@@ -211,7 +229,7 @@ export const conditionalRagSearch = action({
       ctx,
       { threadId: args.threadId },
       {
-        prompt: `${args.prompt}\n\n Is this political or a socially controversial topic? Respond with only 'yes' or 'no'.`,
+        prompt: `${args.prompt}\n\n Determine if this message clearly discusses or relates to a political, social, or cultural issue — such as government, elections, policies, social justice, gender, race, religion, or public controversy. If the message is vague, neutral, personal, or unrelated to society or politics, respond with 'no'. \n\n Respond only with 'yes' or 'no'. Do not guess.`,
       },
       { storageOptions: { saveMessages: "none" } }
     );

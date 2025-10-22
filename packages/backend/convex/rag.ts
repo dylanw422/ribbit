@@ -20,7 +20,7 @@ export const add = action({
   handler: async (ctx, { text }) => {
     // Add the text to a namespace shared by all users.
     await rag.add(ctx, {
-      namespace: "nickjfuentes",
+      namespace: "hasanabi",
       text,
     });
   },

@@ -53,10 +53,10 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         <div
           id="scroll-container"
           ref={scrollRef}
-          className="w-full flex justify-center overflow-y-auto overscroll-none"
+          className="w-full flex justify-center overflow-y-auto overscroll-none [scrollbar-gutter:stable]"
         >
           <Particles className="fixed w-full h-full" color="#6e6e6e" />
-          <div className="md:w-5/6 w-full px-8 z-10">{children}</div>
+          <div className="md:w-5/6 max-w-[1000px] w-full px-8 z-10">{children}</div>
           <div ref={bottomRef} />
         </div>
       </div>

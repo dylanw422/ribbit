@@ -7,7 +7,7 @@ import { LightRays } from "@/components/ui/light-rays";
 import Footer from "@/components/footer";
 
 export default function Home() {
-  const healthCheck = useQuery(api.healthCheck.get);
+  // const healthCheck = useQuery(api.healthCheck.get);
 
   return (
     <div className="w-full h-[100dvh] flex flex-col">

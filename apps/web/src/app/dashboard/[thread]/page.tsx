@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { is } from "zod/v4/locales";
 import { Response } from "@/components/ui/shadcn-io/ai/response";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export default function ThreadPage({ params }: { params: Promise<{ thread: string }> }) {
   const router = useRouter();
@@ -23,6 +24,9 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
   const { isWoke, setIsWoke } = useParty();
   const { data } = authClient.useSession();
   const userId = data?.user?.id;
+  const messageBiases = useQuery(api.messages.getThreadMessagesBias, {
+    threadId: String(thread),
+  });
   const isHeated = useQuery(api.heated.isHeated, { threadId: String(thread) });
   const threads = useQuery(api.agentInteractions.allThreads, {
     userId: userId ?? "",
@@ -41,6 +45,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
 
   const newThread = useAction(api.agentInteractions.newThread);
 
+  // --- FUNCTIONS ---
   const handleSubmit = async () => {
     sendMessage({
       threadId: String(thread),
@@ -65,8 +70,18 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
     router.push(`/dashboard/${thread.threadId}`);
   };
 
+  // --- HELPERS ---
   const lastMessage = results?.[results.length - 1];
   const userHasThread = threads?.threads?.page?.some((t) => t._id === String(thread)) ?? false;
+  const selectedMessageBias = messageBiases?.find(
+    (m) => m.messageId === String(selectedMessage)
+  )?.bias;
+  const selectedMessageComparison = messageBiases?.find(
+    (m) => m.messageId === String(selectedMessage)
+  )?.comparisonResponse;
+  const selectedMessageText = results?.find((m) => m.id === String(selectedMessage))?.text;
+  const comparisionBgColor = selectedMessageBias === "liberal" ? "bg-blue-400/20" : "bg-red-400/20";
+  const oppositeBgColor = selectedMessageBias === "liberal" ? "bg-red-400/20" : "bg-blue-400/20";
 
   return (
     <div id="messages-container" className="flex flex-col h-full">
@@ -96,6 +111,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
               setIsComparisonOpen={setIsComparisonOpen}
               setSelectedMessage={setSelectedMessage}
               isHeated={isHeated}
+              threadId={thread}
             />
           ))}
       </div>
@@ -114,16 +130,30 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
       {/* Bias Comparison Dialog */}
       {/* Bias Comparison Dialog */}
       <Dialog open={isComparisonOpen} onOpenChange={setIsComparisonOpen}>
-        <DialogContent className="rounded-none max-h-[60vh] flex flex-col">
+        {" "}
+        <DialogContent className="rounded-none max-h-[90vh] sm:max-h-[70vh] min-w-[75%] flex flex-col">
           <DialogTitle className="">Bias Comparison</DialogTitle>
-          <h1 className="">This is a comparison of left and right bias responses.</h1>
+          <h1 className="italic">This is a comparison of left and right biased responses.</h1>
 
           {/* Scrollable container */}
-          <div className="flex gap-2 flex-1 overflow-hidden">
-            <div className="w-1/2 border p-2 overflow-auto">
-              <Response>{selectedMessage}</Response>
+          <div className="flex sm:flex-row flex-col gap-4 flex-1 overflow-hidden">
+            <div
+              className={`w-full sm:w-1/2 border-2 p-2 overflow-auto ${comparisionBgColor} text-white`}
+            >
+              <Response>{selectedMessageText}</Response>
             </div>
-            <div className="w-1/2 border p-2 overflow-auto">RESPONSE 2</div>
+            <div
+              className={`w-full sm:w-1/2 border-2 p-2 overflow-auto ${oppositeBgColor} text-white`}
+            >
+              {selectedMessageComparison ? (
+                <Response>{selectedMessageComparison}</Response>
+              ) : (
+                <div className="flex items-center justify-center w-full h-full gap-2 text-neutral-400">
+                  <Spinner className="size-5" />
+                  <h1>Generating response...</h1>
+                </div>
+              )}
+            </div>
           </div>
 
           <DialogFooter />

@@ -27,8 +27,6 @@ export default function CustomTextArea({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const disabled = userText.length === 0 || messageStatus === "streaming";
 
-  console.log(isHeated);
-
   useEffect(() => {
     const scrollableElement = document.querySelector("#scroll-container");
     if (!scrollableElement) return;

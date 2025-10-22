@@ -15,6 +15,7 @@ import type * as healthCheck from "../healthCheck.js";
 import type * as heated from "../heated.js";
 import type * as http from "../http.js";
 import type * as messages from "../messages.js";
+import type * as political from "../political.js";
 import type * as privateData from "../privateData.js";
 import type * as rag from "../rag.js";
 import type * as tasks from "../tasks.js";
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   heated: typeof heated;
   http: typeof http;
   messages: typeof messages;
+  political: typeof political;
   privateData: typeof privateData;
   rag: typeof rag;
   tasks: typeof tasks;
