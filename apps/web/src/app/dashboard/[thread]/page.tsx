@@ -70,6 +70,8 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
     router.push(`/dashboard/${thread.threadId}`);
   };
 
+  if (!user) return null;
+
   // --- HELPERS ---
   const lastMessage = results?.[results.length - 1];
   const userHasThread = threads?.threads?.page?.some((t) => t._id === String(thread)) ?? false;
@@ -125,6 +127,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
           messageStatus={lastMessage?.status}
           isPrivate={!userHasThread}
           isHeated={isHeated}
+          isFree={user.isFree}
         />
       </div>
       {/* Bias Comparison Dialog */}

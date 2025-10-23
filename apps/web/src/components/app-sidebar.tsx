@@ -18,7 +18,7 @@ import {
 import Link from "next/link";
 import SidebarDivider from "./ui/sidebar-divider";
 import { api } from "@ribbit/backend/convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { authClient } from "@/lib/auth-client";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -128,7 +128,13 @@ export function AppSidebar() {
                 <AiOutlineRollback />
                 Log Out
               </button>
-              <CustomerPortalLink polarApi={api.polar} className="flex items-center gap-2">
+
+              <CustomerPortalLink
+                polarApi={{
+                  generateCustomerPortalUrl: api.polar.generateCustomerPortalUrl,
+                }}
+                className="flex items-center gap-2"
+              >
                 <AiOutlineReload />
                 Manage Subscription
               </CustomerPortalLink>

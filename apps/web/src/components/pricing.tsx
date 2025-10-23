@@ -3,9 +3,12 @@ import { Button } from "./ui/button";
 import { CheckoutLink } from "@convex-dev/polar/react";
 import { api } from "@ribbit/backend/convex/_generated/api";
 import { useAction, useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 
 export default function Pricing() {
   const products = useQuery(api.polar.getConfiguredProducts);
+  const user = useQuery(api.auth.getCurrentUser);
+  const router = useRouter();
 
   const freeItems = [
     "10 messages per day",
@@ -51,10 +54,18 @@ export default function Pricing() {
             </div>
           ))}
         </div>
-        {products && products.pro && (
+        {user && products && products.pro && (
           <CheckoutLink polarApi={api.polar} productIds={[products.pro.id]}>
             <Button className="w-full mt-4 bg-white">UPGRADE</Button>
           </CheckoutLink>
+        )}
+        {!user && (
+          <Button
+            onClick={() => router.push("/authenticate/sign-in")}
+            className="w-full mt-4 bg-white"
+          >
+            SIGN IN
+          </Button>
         )}
       </div>
     </div>

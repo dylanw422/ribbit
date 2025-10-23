@@ -11,7 +11,6 @@ export const polar = new Polar(components.polar, {
   // properties.
   getUserInfo: async (ctx) => {
     const user: any = await ctx.runQuery(api.auth.getCurrentUser);
-    console.log(user);
     return {
       userId: user._id,
       email: user.email,

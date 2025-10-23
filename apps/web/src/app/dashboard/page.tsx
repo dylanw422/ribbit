@@ -54,6 +54,7 @@ export default function DashboardPage() {
           userText={userText}
           setUserText={setUserText}
           handleSubmit={handleSubmit}
+          isFree={user.isFree}
         />
       </div>
     </div>
