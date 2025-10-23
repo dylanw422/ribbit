@@ -6,7 +6,6 @@ import { useQuery } from "convex/react";
 
 export default function Header() {
   const user = useQuery(api.auth.getCurrentUser);
-  const { data } = authClient.useSession();
 
   return (
     <div className="w-full h-16 flex items-center justify-between px-12">

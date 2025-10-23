@@ -22,8 +22,8 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
   const [userText, setUserText] = useState("");
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
   const { isWoke, setIsWoke } = useParty();
-  const { data } = authClient.useSession();
-  const userId = data?.user?.id;
+  const user = useQuery(api.auth.getCurrentUser);
+  const userId = user?._id;
   const messageBiases = useQuery(api.messages.getThreadMessagesBias, {
     threadId: String(thread),
   });
