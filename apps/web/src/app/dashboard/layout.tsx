@@ -4,6 +4,9 @@ import { Particles } from "@/components/ui/particles";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useEffect, useRef } from "react";
 import { ScrollProvider, useScroll } from "@/components/scroll-provider";
+import { api } from "@ribbit/backend/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 
 function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null);

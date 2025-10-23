@@ -48,13 +48,6 @@ export function AppSidebar() {
     router.push("/");
   };
 
-  const customerPortalLink = (
-    <CustomerPortalLink polarApi={api.polar} className="flex items-center gap-2">
-      <AiOutlineReload />
-      Manage Subscription
-    </CustomerPortalLink>
-  );
-
   return (
     <Sidebar>
       <SidebarContent className="bg-black flex">
@@ -135,7 +128,10 @@ export function AppSidebar() {
                 <AiOutlineRollback />
                 Log Out
               </button>
-              <button className="flex items-center gap-2">{customerPortalLink}</button>
+              <CustomerPortalLink polarApi={api.polar} className="flex items-center gap-2">
+                <AiOutlineReload />
+                Manage Subscription
+              </CustomerPortalLink>
             </PopoverContent>
           </Popover>
         </div>

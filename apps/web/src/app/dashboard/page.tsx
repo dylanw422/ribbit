@@ -23,16 +23,11 @@ export default function DashboardPage() {
     router.push("/authenticate/sign-in");
   };
 
-  if (!user)
-    return (
-      <div className="w-full h-full flex gap-2 justify-center items-center text-neutral-500">
-        <h1>Must be signed in to use application</h1>
-        <button className="underline hover:cursor-pointer" onClick={handleSignIn}>
-          Sign In
-        </button>
-      </div>
-    );
-  const userId = user._id;
+  if (!user) {
+    return null;
+  }
+
+  const userId = user?._id;
 
   const handleSubmit = async () => {
     if (!userId) return;
