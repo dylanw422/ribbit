@@ -8,7 +8,9 @@ import { Toaster } from "./ui/sonner";
 import { SidebarProvider } from "./ui/sidebar";
 import { createContext, useContext, useState } from "react";
 
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!, {
+  expectAuth: true,
+});
 
 type PartyContextType = {
   isWoke: boolean;
@@ -30,13 +32,13 @@ function PartyProvider({ children }: { children: React.ReactNode }) {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
-      <ConvexBetterAuthProvider client={convex} authClient={authClient}>
+    <ConvexBetterAuthProvider client={convex} authClient={authClient}>
+      <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
         <SidebarProvider>
           <PartyProvider>{children}</PartyProvider>
         </SidebarProvider>
-      </ConvexBetterAuthProvider>
-      <Toaster richColors />
-    </ThemeProvider>
+        <Toaster richColors />
+      </ThemeProvider>
+    </ConvexBetterAuthProvider>
   );
 }

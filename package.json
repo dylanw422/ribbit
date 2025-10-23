@@ -15,7 +15,9 @@
     "dev:server": "turbo -F @ribbit/backend dev",
     "dev:setup": "turbo -F @ribbit/backend dev:setup"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@convex-dev/polar": "^0.6.4"
+  },
   "devDependencies": {
     "turbo": "^2.5.4"
   },

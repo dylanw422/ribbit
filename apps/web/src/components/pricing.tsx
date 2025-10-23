@@ -1,7 +1,12 @@
 import { AiOutlineCheck } from "react-icons/ai";
 import { Button } from "./ui/button";
+import { CheckoutLink } from "@convex-dev/polar/react";
+import { api } from "@ribbit/backend/convex/_generated/api";
+import { useAction, useQuery } from "convex/react";
 
 export default function Pricing() {
+  const products = useQuery(api.polar.getConfiguredProducts);
+
   const freeItems = [
     "10 messages per day",
     "20 threads",
@@ -46,7 +51,11 @@ export default function Pricing() {
             </div>
           ))}
         </div>
-        <Button className="w-full mt-4 bg-white">UPGRADE</Button>
+        {products && products.pro && (
+          <CheckoutLink polarApi={api.polar} productIds={[products.pro.id]}>
+            <Button className="w-full mt-4 bg-white">UPGRADE</Button>
+          </CheckoutLink>
+        )}
       </div>
     </div>
   );

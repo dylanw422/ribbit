@@ -93,6 +93,7 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Email"
                     className="pl-8 font-mono"
                   />
                   <AiOutlineMail className="absolute top-1/2 -translate-y-1/2 left-2 text-neutral-500 " />
@@ -123,7 +124,8 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="pl-8"
+                    placeholder="Password"
+                    className="pl-8 font-mono"
                   />
                   <AiOutlineLock className="absolute top-1/2 -translate-y-1/2 left-2 text-neutral-500 " />
                 </div>

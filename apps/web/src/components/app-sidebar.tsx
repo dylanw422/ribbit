@@ -6,7 +6,15 @@ import {
   SidebarHeader,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { AiFillMessage, AiOutlineFire, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiFillMessage,
+  AiOutlineFire,
+  AiOutlineLogout,
+  AiOutlineMore,
+  AiOutlineReload,
+  AiOutlineRollback,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import Link from "next/link";
 import SidebarDivider from "./ui/sidebar-divider";
 import { api } from "@ribbit/backend/convex/_generated/api";
@@ -14,13 +22,15 @@ import { useQuery } from "convex/react";
 import { authClient } from "@/lib/auth-client";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { CustomerPortalLink } from "@convex-dev/polar/react";
 
 export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const threadFromPath = pathname.split("/").pop();
-  const { data } = authClient.useSession();
-  const userId = data?.user?.id;
+  const user = useQuery(api.auth.getCurrentUser);
+  const userId = user?._id;
 
   const threads = useQuery(api.agentInteractions.allThreads, {
     userId: userId ?? "",
@@ -33,9 +43,21 @@ export function AppSidebar() {
     return heatedThreads.some((heated) => heated.threadId === threadId);
   };
 
+  const handleLogout = async () => {
+    await authClient.signOut();
+    router.push("/");
+  };
+
+  const customerPortalLink = (
+    <CustomerPortalLink polarApi={api.polar} className="flex items-center gap-2">
+      <AiOutlineReload />
+      Manage Subscription
+    </CustomerPortalLink>
+  );
+
   return (
     <Sidebar>
-      <SidebarContent className="bg-black">
+      <SidebarContent className="bg-black flex">
         <SidebarHeader className="hover:cursor-pointer" onClick={() => router.push("/")}>
           <h1 className="font-mono font-bold tracking-widest">RIBBIT.</h1>
         </SidebarHeader>
@@ -57,6 +79,7 @@ export function AppSidebar() {
         </h1>{" "}
         <SidebarGroup
           className="
+          flex-1
     text-sm space-y-4 pl-3 overflow-y-auto
     scrollbar-track-transparent
     [&::-webkit-scrollbar]:w-0
@@ -85,6 +108,37 @@ export function AppSidebar() {
               </Link>
             ))}
         </SidebarGroup>
+        <div className="border-t p-4 flex justify-between items-center">
+          {user && (
+            <div className="flex flex-col">
+              <h1 className="text-sm">{user?.name}</h1>
+              <h1 className="text-sm text-neutral-500">
+                {user && user.isFree ? "Free" : "Premium"}
+              </h1>
+            </div>
+          )}
+          <Popover>
+            {user && (
+              <PopoverTrigger className="hover:cursor-pointer">
+                <AiOutlineMore className="w-5 h-5" />
+              </PopoverTrigger>
+            )}
+            <PopoverContent
+              className="rounded-none p-2 text-sm flex flex-col mb-4 w-48 items-start gap-2 bg-neutral-950"
+              side="top"
+              align="end"
+            >
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-red-400 cursor-pointer"
+              >
+                <AiOutlineRollback />
+                Log Out
+              </button>
+              <button className="flex items-center gap-2">{customerPortalLink}</button>
+            </PopoverContent>
+          </Popover>
+        </div>
       </SidebarContent>
     </Sidebar>
   );

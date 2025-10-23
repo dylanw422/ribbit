@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useAction, useMutation } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@ribbit/backend/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import CustomTextArea from "@/components/textarea";
@@ -10,7 +10,7 @@ import { useParty } from "@/components/providers";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { data } = authClient.useSession();
+  const user = useQuery(api.auth.getCurrentUser);
   const [userText, setUserText] = useState("");
   const { isWoke, setIsWoke } = useParty();
 
@@ -19,7 +19,20 @@ export default function DashboardPage() {
     api.agentInteractions.initiateAsyncStreaming
   ).withOptimisticUpdate(optimisticallySendMessage(api.agentInteractions.listThreadMessages));
 
-  const userId = data?.user?.id;
+  const handleSignIn = async () => {
+    router.push("/authenticate/sign-in");
+  };
+
+  if (!user)
+    return (
+      <div className="w-full h-full flex gap-2 justify-center items-center text-neutral-500">
+        <h1>Must be signed in to use application</h1>
+        <button className="underline hover:cursor-pointer" onClick={handleSignIn}>
+          Sign In
+        </button>
+      </div>
+    );
+  const userId = user._id;
 
   const handleSubmit = async () => {
     if (!userId) return;

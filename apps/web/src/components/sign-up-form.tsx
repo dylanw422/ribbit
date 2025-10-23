@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
-import { AiOutlineEye, AiOutlineLock, AiOutlineMail } from "react-icons/ai";
+import { AiOutlineEye, AiOutlineLock, AiOutlineMail, AiOutlineUser } from "react-icons/ai";
 import { SiApple } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 
@@ -24,7 +24,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         {
           email: value.email,
           password: value.password,
-          name: value.name,
+          name: value.name || "",
         },
         {
           onSuccess: () => {
@@ -60,29 +60,34 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         }}
         className="space-y-4"
       >
-        {/* <div>
+        <div>
           <form.Field name="name">
             {(field) => (
               <div className="space-y-2">
                 <Label className="font-mono" htmlFor={field.name}>
                   Name
                 </Label>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500">
-                    {error?.message}
-                  </p>
-                ))}
+                <div className="relative">
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="First Last"
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    className="pl-8 font-mono"
+                  />
+                  <AiOutlineUser className="absolute top-1/2 -translate-y-1/2 left-2 text-neutral-500 " />
+                  {field.state.meta.errors.map((error) => (
+                    <p key={error?.message} className="text-red-500">
+                      {error?.message}
+                    </p>
+                  ))}
+                </div>
               </div>
             )}
           </form.Field>
-        </div> */}
+        </div>
 
         <div>
           <form.Field name="email">
@@ -99,6 +104,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Email"
                     className="pl-8 font-mono"
                   />
                   <AiOutlineMail className="absolute top-1/2 -translate-y-1/2 left-2 text-neutral-500 " />
@@ -129,7 +135,8 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="pl-8"
+                    placeholder="Password"
+                    className="pl-8 font-mono"
                   />
                   <AiOutlineLock className="absolute top-1/2 -translate-y-1/2 left-2 text-neutral-500 " />
                 </div>

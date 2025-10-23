@@ -4,6 +4,7 @@ import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import { betterAuth } from "better-auth";
+import { polar } from "./polar";
 
 const siteUrl = process.env.SITE_URL!;
 
@@ -32,6 +33,18 @@ export const createAuth = (
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
-    return authComponent.getAuthUser(ctx);
+    const currentUser = await authComponent.getAuthUser(ctx);
+    if (!currentUser) throw new Error("User not found");
+
+    const subscription = await polar.getCurrentSubscription(ctx, {
+      userId: currentUser._id,
+    });
+
+    return {
+      ...currentUser,
+      subscription,
+      isFree: !subscription,
+      isPremium: subscription?.productKey === "pro",
+    };
   },
 });
