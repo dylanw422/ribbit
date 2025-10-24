@@ -19,7 +19,6 @@ import type * as polar from "../polar.js";
 import type * as political from "../political.js";
 import type * as privateData from "../privateData.js";
 import type * as rag from "../rag.js";
-import type * as tasks from "../tasks.js";
 
 import type {
   ApiFromModules,
@@ -47,7 +46,6 @@ declare const fullApi: ApiFromModules<{
   political: typeof political;
   privateData: typeof privateData;
   rag: typeof rag;
-  tasks: typeof tasks;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
