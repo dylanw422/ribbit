@@ -5,9 +5,8 @@ import { api } from "@ribbit/backend/convex/_generated/api";
 import { useAction, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 
-export default function Pricing() {
+export default function Pricing({ user }: { user: any }) {
   const products = useQuery(api.polar.getConfiguredProducts);
-  const user = useQuery(api.auth.getCurrentUser);
   const router = useRouter();
 
   const freeItems = [
@@ -30,7 +29,7 @@ export default function Pricing() {
 
   return (
     <div className="flex justify-evenly w-full space-x-8">
-      <div id="free" className="border p-4 w-full">
+      <div id="free" className="border bg-neutral-950 p-4 w-full">
         <h1 className="tracking-wider text-xl">Free</h1>
         <div className="border-t w-full mx-auto my-4" />
         <div className="space-y-2">
@@ -42,8 +41,7 @@ export default function Pricing() {
           ))}
         </div>
       </div>
-      <div id="free" className="border p-4 w-full">
-        {" "}
+      <div id="paid" className="border p-4 w-full bg-neutral-950">
         <h1 className="tracking-wider text-xl">Pro</h1>
         <div className="border-t w-full mx-auto my-4" />
         <div className="space-y-2">

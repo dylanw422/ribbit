@@ -6,16 +6,16 @@ import CustomTextArea from "@/components/textarea";
 import Message from "@/components/message";
 import { useUIMessages, optimisticallySendMessage } from "@convex-dev/agent/react";
 import { useParty } from "@/components/providers";
-import { authClient } from "@/lib/auth-client";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { is } from "zod/v4/locales";
 import { Response } from "@/components/ui/shadcn-io/ai/response";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { useScroll } from "@/components/scroll-provider";
 
 export default function ThreadPage({ params }: { params: Promise<{ thread: string }> }) {
   const router = useRouter();
+  const { scrollHeight } = useScroll();
   const { thread } = use(params);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
