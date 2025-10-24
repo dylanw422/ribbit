@@ -1,7 +1,7 @@
 "use client";
 import { api } from "@ribbit/backend/convex/_generated/api";
 import { useAction, useMutation, useQuery } from "convex/react";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import CustomTextArea from "@/components/textarea";
 import Message from "@/components/message";
 import { useUIMessages, optimisticallySendMessage } from "@convex-dev/agent/react";
@@ -15,7 +15,6 @@ import { useScroll } from "@/components/scroll-provider";
 
 export default function ThreadPage({ params }: { params: Promise<{ thread: string }> }) {
   const router = useRouter();
-  const { scrollHeight } = useScroll();
   const { thread } = use(params);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
@@ -54,6 +53,10 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
       debate: isHeated ? true : false,
     });
     setUserText("");
+    const scrollableElement = document.querySelector("#scroll-container");
+    if (scrollableElement) {
+      scrollableElement.scrollTo({ top: scrollableElement.scrollHeight - 200, behavior: "smooth" });
+    }
   };
 
   const handleHeatedConfirm = async () => {
@@ -69,6 +72,16 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
 
     router.push(`/dashboard/${thread.threadId}`);
   };
+
+  useEffect(() => {
+    const scrollableElement = document.querySelector("#scroll-container");
+    if (scrollableElement && results[results.length - 1]?.role === "user") {
+      scrollableElement.scrollTo({
+        top: scrollableElement.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [results]);
 
   if (!user) return null;
 
@@ -88,7 +101,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
   return (
     <div id="messages-container" className="flex flex-col h-full">
       {/* Messages */}
-      <div className="flex-1">
+      <div className={`flex-1 ${results[results.length - 1]?.role === "user" ? "pb-36" : ""}`}>
         {isHeated && (
           <div className="w-full flex sticky justify-center top-0 select-none">
             <h1 className="text-center py-1 px-4 bg-orange-600 border border-orange-500 border-t-orange-600 text-black font-bold text-xs">

@@ -337,11 +337,12 @@ export const Response = memo(
       typeof children === "string" && shouldParseIncompleteMarkdown
         ? parseIncompleteMarkdown(children)
         : children;
-
     return (
       <div
         className={cn(
           "size-full whitespace-pre-wrap [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+          "[&_ol]:whitespace-normal [&_ul]:whitespace-normal",
+          "[&_li]:whitespace-normal",
           className
         )}
         {...props}
