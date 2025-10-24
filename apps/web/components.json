@@ -25,6 +25,7 @@
       "headers": {
         "Authorization": "Bearer ${MAGICUI_PRO_REGISTRY_TOKEN}"
       }
-    }
+    },
+    "@ai-elements": "https://registry.ai-sdk.dev/{name}.json"
   }
 }

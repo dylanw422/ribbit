@@ -9,9 +9,9 @@ import { useParty } from "@/components/providers";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Response } from "@/components/ui/shadcn-io/ai/response";
+// import { Response } from "@/components/ui/shadcn-io/ai/response";
+import { Response } from "@/components/ai-elements/response";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import { useScroll } from "@/components/scroll-provider";
 
 export default function ThreadPage({ params }: { params: Promise<{ thread: string }> }) {
   const router = useRouter();
@@ -101,7 +101,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
   return (
     <div id="messages-container" className="flex flex-col h-full">
       {/* Messages */}
-      <div className={`flex-1 ${results[results.length - 1]?.role === "user" ? "pb-36" : ""}`}>
+      <div className={`flex-1 ${results[results.length - 1]?.role === "user" ? "pb-12" : ""}`}>
         {isHeated && (
           <div className="w-full flex sticky justify-center top-0 select-none">
             <h1 className="text-center py-1 px-4 bg-orange-600 border border-orange-500 border-t-orange-600 text-black font-bold text-xs">
