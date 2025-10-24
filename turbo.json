@@ -21,5 +21,6 @@
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "globalEnv": ["CONVEX_DEPLOY_KEY"]
 }
