@@ -24,6 +24,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CustomerPortalLink } from "@convex-dev/polar/react";
+import { generateCustomerPortalUrl } from "@ribbit/backend/convex/polar";
 
 export function AppSidebar() {
   const router = useRouter();
@@ -129,7 +130,12 @@ export function AppSidebar() {
                 Log Out
               </button>
 
-              <CustomerPortalLink polarApi={api.polar} className="flex items-center gap-2">
+              <CustomerPortalLink
+                polarApi={{
+                  generateCustomerPortalUrl: api.polar.generateCustomerPortalUrl,
+                }}
+                className="flex items-center gap-2"
+              >
                 <AiOutlineReload />
                 Manage Subscription
               </CustomerPortalLink>
