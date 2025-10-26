@@ -32,7 +32,7 @@ export const createAuth = (
 
 export const getCurrentUser = query({
   args: {},
-  handler: async (ctx) => {
+  handler: async (ctx: GenericCtx<DataModel>) => {
     const currentUser = await authComponent.getAuthUser(ctx);
     if (!currentUser) throw new Error("User not found");
 
