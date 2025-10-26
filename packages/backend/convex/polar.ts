@@ -39,10 +39,3 @@ export const {
   generateCheckoutLink,
   generateCustomerPortalUrl,
 } = polar.api();
-
-export const syncProducts = action({
-  args: {},
-  handler: async (ctx) => {
-    await polar.syncProducts(ctx);
-  },
-});
