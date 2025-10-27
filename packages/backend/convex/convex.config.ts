@@ -5,8 +5,8 @@ import rag from "@convex-dev/rag/convex.config";
 import polar from "@convex-dev/polar/convex.config";
 
 const app = defineApp();
+app.use(polar);
 app.use(betterAuth);
 app.use(rag);
 app.use(agent);
-app.use(polar);
 export default app;
