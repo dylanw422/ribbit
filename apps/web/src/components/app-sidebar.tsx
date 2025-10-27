@@ -130,7 +130,7 @@ export function AppSidebar() {
                 Log Out
               </button>
 
-              <CustomerPortalLink
+              {/* <CustomerPortalLink
                 polarApi={{
                   generateCustomerPortalUrl: api.polar.generateCustomerPortalUrl,
                 }}
@@ -138,7 +138,7 @@ export function AppSidebar() {
               >
                 <AiOutlineReload />
                 Manage Subscription
-              </CustomerPortalLink>
+              </CustomerPortalLink> */}
             </PopoverContent>
           </Popover>
         </div>
