@@ -130,12 +130,7 @@ export function AppSidebar() {
                 Log Out
               </button>
 
-              <CustomerPortalLink
-                polarApi={{
-                  generateCustomerPortalUrl: api.polar.generateCustomerPortalUrl,
-                }}
-                className="flex items-center gap-2"
-              >
+              <CustomerPortalLink polarApi={api.polar} className="flex items-center gap-2">
                 <AiOutlineReload />
                 Manage Subscription
               </CustomerPortalLink>
