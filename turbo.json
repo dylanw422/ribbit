@@ -22,5 +22,10 @@
       "persistent": true
     }
   },
-  "globalEnv": ["CONVEX_DEPLOY_KEY"]
+  "globalEnv": [
+    "CONVEX_DEPLOY_KEY",
+    "MAGICUI_PRO_REGISTRY_TOKEN",
+    "POLAR_ORGANIZATION_TOKEN",
+    "POLAR_WEBHOOK_SECRET"
+  ]
 }
