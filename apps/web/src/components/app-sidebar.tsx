@@ -24,7 +24,6 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CustomerPortalLink } from "@convex-dev/polar/react";
-import { generateCustomerPortalUrl } from "@ribbit/backend/convex/polar";
 
 export function AppSidebar() {
   const router = useRouter();

@@ -40,4 +40,5 @@ export const {
   generateCustomerPortalUrl,
 } = polar.api();
 
-export default polar;
+console.log("[BUILD DEBUG] Polar module loaded");
+console.log("[BUILD DEBUG] Polar exports:", Object.keys(polar));
