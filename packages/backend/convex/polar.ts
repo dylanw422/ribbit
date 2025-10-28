@@ -27,7 +27,6 @@ export const polar = new Polar(components.polar, {
   products: {
     pro: "79a35df8-5f12-49c1-b103-bd6d56a3253d",
   },
-  server: "production",
 });
 
 // Export API functions from the Polar client
