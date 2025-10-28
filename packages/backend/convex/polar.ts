@@ -39,6 +39,3 @@ export const {
   generateCheckoutLink,
   generateCustomerPortalUrl,
 } = polar.api();
-
-console.log("[BUILD DEBUG] Polar module loaded");
-console.log("[BUILD DEBUG] Polar exports:", Object.keys(polar));
