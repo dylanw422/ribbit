@@ -21,7 +21,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
   const [userText, setUserText] = useState("");
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
   const { isWoke, setIsWoke } = useParty();
-  const user = useQuery(api.auth.getCurrentUser);
+  const user = useQuery(api.polar.getCurrentUser);
   const userId = user?._id;
   const messageBiases = useQuery(api.messages.getThreadMessagesBias, {
     threadId: String(thread),

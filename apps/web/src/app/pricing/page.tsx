@@ -6,7 +6,7 @@ import { api } from "@ribbit/backend/convex/_generated/api";
 import { useQuery } from "convex/react";
 
 export default function PricingPage() {
-  const user = useQuery(api.auth.getCurrentUser);
+  const user = useQuery(api.polar.getCurrentUser);
   return (
     <div className="w-full h-[100dvh] flex flex-col items-center">
       <Header />

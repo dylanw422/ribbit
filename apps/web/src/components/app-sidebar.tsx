@@ -29,8 +29,7 @@ export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const threadFromPath = pathname.split("/").pop();
-  const user = useQuery(api.auth.getCurrentUser);
-  const subscription = useQuery(api.polar.getCurrentSubscription);
+  const user = useQuery(api.polar.getCurrentUser);
   const userId = user?._id;
 
   const threads = useQuery(api.agentInteractions.allThreads, {
@@ -106,9 +105,7 @@ export function AppSidebar() {
           {user && (
             <div className="flex flex-col">
               <h1 className="text-sm">{user?.name}</h1>
-              <h1 className="text-sm text-neutral-500">
-                {subscription ? "Premium" : "Free"}
-              </h1>
+              <h1 className="text-sm text-neutral-500">{"Free"}</h1>
             </div>
           )}
           <Popover>

@@ -10,7 +10,7 @@ import { useParty } from "@/components/providers";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const user = useQuery(api.auth.getCurrentUser);
+  const user = useQuery(api.polar.getCurrentUser);
   const [userText, setUserText] = useState("");
   const { isWoke, setIsWoke } = useParty();
 
