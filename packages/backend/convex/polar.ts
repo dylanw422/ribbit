@@ -31,11 +31,11 @@ export const polarClient = new Polar(components.polar, {
 });
 
 // Export API functions from the Polar client
-export const {
-  changeCurrentSubscription,
-  cancelCurrentSubscription,
-  getConfiguredProducts,
-  listAllProducts,
-  generateCheckoutLink,
-  generateCustomerPortalUrl,
-} = polarClient.api();
+const polarApi = polarClient.api();
+
+export const changeCurrentSubscription = polarApi.changeCurrentSubscription;
+export const cancelCurrentSubscription = polarApi.cancelCurrentSubscription;
+export const getConfiguredProducts = polarApi.getConfiguredProducts;
+export const listAllProducts = polarApi.listAllProducts;
+export const generateCheckoutLink = polarApi.generateCheckoutLink;
+export const generateCustomerPortalUrl = polarApi.generateCustomerPortalUrl;
