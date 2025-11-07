@@ -30,6 +30,7 @@ export function AppSidebar() {
   const pathname = usePathname();
   const threadFromPath = pathname.split("/").pop();
   const user = useQuery(api.auth.getCurrentUser);
+  const subscription = useQuery(api.polar.getCurrentSubscription);
   const userId = user?._id;
 
   const threads = useQuery(api.agentInteractions.allThreads, {
@@ -106,7 +107,7 @@ export function AppSidebar() {
             <div className="flex flex-col">
               <h1 className="text-sm">{user?.name}</h1>
               <h1 className="text-sm text-neutral-500">
-                {user && user.isFree ? "Free" : "Premium"}
+                {subscription ? "Premium" : "Free"}
               </h1>
             </div>
           )}

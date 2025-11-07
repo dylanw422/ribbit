@@ -26,7 +26,7 @@ export default function CustomTextArea({
   messageStatus?: string;
   isPrivate?: boolean;
   isHeated?: boolean;
-  isFree: boolean;
+  isFree?: boolean;
 }) {
   const products = useQuery(api.polar.getConfiguredProducts);
   const { hasScroll, scrollHeight } = useScroll();
