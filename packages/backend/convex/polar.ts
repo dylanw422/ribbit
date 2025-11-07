@@ -11,7 +11,7 @@ export const polar = new Polar(components.polar, {
   // current user. The function should return an object with `userId` and `email`
   // properties.
   getUserInfo: async (ctx) => {
-    const user: any = await ctx.runQuery(api.polar.getCurrentUser);
+    const user: any = await ctx.runQuery(api.currentUser.getCurrentUser);
     return {
       userId: user._id,
       email: user.email,
@@ -39,12 +39,3 @@ export const {
   generateCheckoutLink,
   generateCustomerPortalUrl,
 } = polar.api();
-
-export const getCurrentUser = query({
-  args: {},
-  handler: async (ctx) => {
-    const currentUser = await authComponent.getAuthUser(ctx as any);
-    if (!currentUser) return null;
-    return currentUser;
-  },
-});

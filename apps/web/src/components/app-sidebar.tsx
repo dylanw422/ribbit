@@ -29,7 +29,7 @@ export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const threadFromPath = pathname.split("/").pop();
-  const user = useQuery(api.polar.getCurrentUser);
+  const user = useQuery(api.currentUser.getCurrentUser);
   const userId = user?._id;
 
   const threads = useQuery(api.agentInteractions.allThreads, {

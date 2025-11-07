@@ -11,6 +11,7 @@
 import type * as agent from "../agent.js";
 import type * as agentInteractions from "../agentInteractions.js";
 import type * as auth from "../auth.js";
+import type * as currentUser from "../currentUser.js";
 import type * as healthCheck from "../healthCheck.js";
 import type * as heated from "../heated.js";
 import type * as http from "../http.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   agent: typeof agent;
   agentInteractions: typeof agentInteractions;
   auth: typeof auth;
+  currentUser: typeof currentUser;
   healthCheck: typeof healthCheck;
   heated: typeof heated;
   http: typeof http;
