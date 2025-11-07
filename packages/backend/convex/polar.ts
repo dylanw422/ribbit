@@ -4,7 +4,7 @@ import { api, components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { action, query } from "./_generated/server";
 
-export const polar = new Polar(components.polar, {
+export const polarClient = new Polar(components.polar, {
   // Required: provide a function the component can use to get the current user's ID and
   // email - this will be used for retrieving the correct subscription data for the
   // current user. The function should return an object with `userId` and `email`
@@ -38,4 +38,4 @@ export const {
   listAllProducts,
   generateCheckoutLink,
   generateCustomerPortalUrl,
-} = polar.api();
+} = polarClient.api();
