@@ -31,16 +31,6 @@ export const polar = new Polar(components.polar, {
   server: "production",
 });
 
-export const getCurrentUser = query({
-  args: {},
-  handler: async (ctx) => {
-    const currentUser = await authComponent.getAuthUser(ctx as any);
-    if (!currentUser) return null;
-    return currentUser;
-  },
-});
-
-// Export API functions from the Polar client
 export const {
   changeCurrentSubscription,
   cancelCurrentSubscription,
@@ -49,3 +39,12 @@ export const {
   generateCheckoutLink,
   generateCustomerPortalUrl,
 } = polar.api();
+
+export const getCurrentUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const currentUser = await authComponent.getAuthUser(ctx as any);
+    if (!currentUser) return null;
+    return currentUser;
+  },
+});
