@@ -1,9 +1,12 @@
 import { AiOutlineCheck } from "react-icons/ai";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { useAction } from "convex/react";
+import { api } from "@ribbit/backend/convex/_generated/api";
 
 export default function Pricing({ user }: { user: any }) {
   const router = useRouter();
+  const createCheckout = useAction(api.payments.createCheckout);
 
   const freeItems = [
     "10 messages per day",
@@ -22,6 +25,25 @@ export default function Pricing({ user }: { user: any }) {
     "Side-by-side comparison",
     "AI debate mode",
   ];
+
+  const handleCheckout = async () => {
+    const { checkout_url } = await createCheckout({
+      product_cart: [
+        {
+          product_id:
+            process.env.NODE_ENV === "development"
+              ? "pdt_glgVUbawfIQCGOo9I7Jkr"
+              : "pdt_QUCHzPrjVIpp7gnvkoIbo",
+          quantity: 1,
+        },
+      ],
+      returnUrl:
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:3001/dashboard"
+          : "https://ribbit-web.vercel.app/dashboard",
+    });
+    window.location.href = checkout_url;
+  };
 
   return (
     <div className="flex justify-evenly w-full space-x-8">
@@ -48,13 +70,17 @@ export default function Pricing({ user }: { user: any }) {
             </div>
           ))}
         </div>
-        <Button className="w-full mt-4 bg-white">UPGRADE</Button>
-        {!user && (
+
+        {!user ? (
           <Button
             onClick={() => router.push("/authenticate/sign-in")}
             className="w-full mt-4 bg-white"
           >
             SIGN IN
+          </Button>
+        ) : (
+          <Button onClick={handleCheckout} className="w-full mt-4 bg-white">
+            UPGRADE
           </Button>
         )}
       </div>

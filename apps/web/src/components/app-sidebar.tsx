@@ -31,6 +31,7 @@ export function AppSidebar() {
   const threadFromPath = pathname.split("/").pop();
   const user = useQuery(api.auth.getCurrentUser);
   const userId = user?._id;
+  const customerPortal = useAction(api.payments.getCustomerPortal);
 
   const threads = useQuery(api.agentInteractions.allThreads, {
     userId: userId ?? "",
@@ -46,6 +47,13 @@ export function AppSidebar() {
   const handleLogout = async () => {
     await authClient.signOut();
     router.push("/");
+  };
+
+  const createCustomerPortal = async () => {
+    const result = await customerPortal({
+      send_email: false,
+    });
+    window.location.href = result.portal_url;
   };
 
   return (
@@ -125,6 +133,13 @@ export function AppSidebar() {
               >
                 <AiOutlineRollback />
                 Log Out
+              </button>
+              <button
+                onClick={createCustomerPortal}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <AiOutlineReload />
+                Manage Subscription
               </button>
             </PopoverContent>
           </Popover>
