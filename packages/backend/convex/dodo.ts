@@ -8,19 +8,20 @@ export const dodo = new DodoPayments(components.dodopayments, {
   // Customize it based on your authentication provider and user database
 
   identify: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const identity = await ctx.runQuery(api.auth.getCurrentUser);
     if (!identity) {
-      return null; // User is not logged in
+      return null;
     }
 
-    const user: any = await ctx.runQuery(api.auth.getCurrentUser);
-
+    const user: any = await ctx.runQuery(api.payments.getUserSubscriptions, {
+      userId: identity._id,
+    });
     if (!user) {
-      return null; // User not found in database
+      return null;
     }
 
     return {
-      dodoCustomerId: user._id, // Replace user.dodoCustomerId with your field storing Dodo Payments customer ID
+      dodoCustomerId: user.dodoId,
     };
   },
   apiKey: process.env.DODO_PAYMENTS_API_KEY!,

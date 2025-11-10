@@ -140,7 +140,7 @@ export default function ThreadPage({ params }: { params: Promise<{ thread: strin
           messageStatus={lastMessage?.status}
           isPrivate={!userHasThread}
           isHeated={isHeated}
-          // isFree={user.isFree}
+          isPro={user.pro}
         />
       </div>
       {/* Bias Comparison Dialog */}

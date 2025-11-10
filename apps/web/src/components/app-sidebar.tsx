@@ -53,6 +53,7 @@ export function AppSidebar() {
     const result = await customerPortal({
       send_email: false,
     });
+    console.log("customerPortal:", result);
     window.location.href = result.portal_url;
   };
 
@@ -113,7 +114,7 @@ export function AppSidebar() {
           {user && (
             <div className="flex flex-col">
               <h1 className="text-sm">{user?.name}</h1>
-              <h1 className="text-sm text-neutral-500">{"Free"}</h1>
+              <h1 className="text-sm text-neutral-500">{user?.pro ? "Pro" : "Free"}</h1>
             </div>
           )}
           <Popover>

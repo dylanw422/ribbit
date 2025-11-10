@@ -16,4 +16,12 @@ export default defineSchema({
     threadId: v.string(),
     messageId: v.string(),
   }),
+  subscriptions: defineTable({
+    userId: v.string(),
+    dodoId: v.string(),
+    subscriptionId: v.string(),
+    customerEmail: v.string(),
+    status: v.string(),
+    webhookPayload: v.string(),
+  }),
 });

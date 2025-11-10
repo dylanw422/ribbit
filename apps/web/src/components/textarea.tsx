@@ -3,6 +3,9 @@ import { AiOutlineArrowUp, AiOutlineRetweet } from "react-icons/ai";
 import { Textarea } from "./ui/textarea";
 import { useScroll } from "./scroll-provider";
 import { useEffect, useState } from "react";
+import { api } from "@ribbit/backend/convex/_generated/api";
+import { useAction } from "convex/react";
+import { useCheckout } from "@/lib/checkout";
 
 export default function CustomTextArea({
   isWoke,
@@ -13,7 +16,7 @@ export default function CustomTextArea({
   messageStatus,
   isPrivate,
   isHeated,
-  isFree,
+  isPro,
 }: {
   isWoke: boolean;
   setIsWoke: (isWoke: boolean) => void;
@@ -23,11 +26,12 @@ export default function CustomTextArea({
   messageStatus?: string;
   isPrivate?: boolean;
   isHeated?: boolean;
-  isFree?: boolean;
+  isPro?: boolean;
 }) {
   const { hasScroll, scrollHeight } = useScroll();
   const [showScrollButton, setShowScrollButton] = useState(false);
   const disabled = userText.length === 0 || messageStatus === "streaming";
+  const { handleCheckout } = useCheckout();
 
   useEffect(() => {
     const scrollableElement = document.querySelector("#scroll-container");
@@ -110,7 +114,15 @@ export default function CustomTextArea({
       </div>
       <div className="flex justify-between items-center pt-2 bg-black pb-4">
         <h1 className="text-xs text-neutral-500">Shift + Enter to break</h1>
-        <h1 className="text-xs text-purple-400 font-mono font-semibold tracking-wider">UPGRADE</h1>
+
+        {!isPro && (
+          <button
+            onClick={handleCheckout}
+            className="text-xs text-purple-400 font-mono font-semibold tracking-wider"
+          >
+            UPGRADE
+          </button>
+        )}
       </div>
     </div>
   );

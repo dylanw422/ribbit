@@ -20,6 +20,7 @@ import type * as payments from "../payments.js";
 import type * as political from "../political.js";
 import type * as privateData from "../privateData.js";
 import type * as rag from "../rag.js";
+import type * as webhooks from "../webhooks.js";
 
 import type {
   ApiFromModules,
@@ -48,6 +49,7 @@ declare const fullApi: ApiFromModules<{
   political: typeof political;
   privateData: typeof privateData;
   rag: typeof rag;
+  webhooks: typeof webhooks;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
