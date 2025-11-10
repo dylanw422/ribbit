@@ -12,14 +12,26 @@ export const createSubscription = internalMutation({
     webhookPayload: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("subscriptions", {
-      userId: args.userId,
-      dodoId: args.dodoId,
-      subscriptionId: args.subscriptionId,
-      customerEmail: args.customerEmail,
-      status: args.status,
-      webhookPayload: args.webhookPayload,
-    });
+    const existingSubscription = await ctx.db
+      .query("subscriptions")
+      .filter((q) => q.eq(q.field("dodoId"), args.dodoId))
+      .unique();
+
+    if (existingSubscription) {
+      await ctx.db.patch(existingSubscription._id, {
+        status: args.status,
+        webhookPayload: args.webhookPayload,
+      });
+    } else {
+      await ctx.db.insert("subscriptions", {
+        userId: args.userId,
+        dodoId: args.dodoId,
+        subscriptionId: args.subscriptionId,
+        customerEmail: args.customerEmail,
+        status: args.status,
+        webhookPayload: args.webhookPayload,
+      });
+    }
   },
 });
 
