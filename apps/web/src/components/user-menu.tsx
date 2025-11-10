@@ -14,7 +14,7 @@ import { api } from "@ribbit/backend/convex/_generated/api";
 
 export default function UserMenu() {
   const router = useRouter();
-  const user = useQuery(api.currentUser.getCurrentUser);
+  const user = useQuery(api.auth.getCurrentUser);
 
   return (
     <DropdownMenu>

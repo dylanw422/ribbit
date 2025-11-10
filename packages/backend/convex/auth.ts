@@ -28,3 +28,12 @@ export const createAuth = (
     secret: process.env.BETTER_AUTH_SECRET!,
   });
 };
+
+export const getCurrentUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const currentUser = await authComponent.getAuthUser(ctx as any);
+    if (!currentUser) return null;
+    return currentUser;
+  },
+});

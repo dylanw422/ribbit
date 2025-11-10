@@ -3,9 +3,6 @@ import { AiOutlineArrowUp, AiOutlineRetweet } from "react-icons/ai";
 import { Textarea } from "./ui/textarea";
 import { useScroll } from "./scroll-provider";
 import { useEffect, useState } from "react";
-import { CheckoutLink } from "@convex-dev/polar/react";
-import { api } from "@ribbit/backend/convex/_generated/api";
-import { useQuery } from "convex/react";
 
 export default function CustomTextArea({
   isWoke,
@@ -28,7 +25,6 @@ export default function CustomTextArea({
   isHeated?: boolean;
   isFree?: boolean;
 }) {
-  const products = useQuery(api.polar.getConfiguredProducts);
   const { hasScroll, scrollHeight } = useScroll();
   const [showScrollButton, setShowScrollButton] = useState(false);
   const disabled = userText.length === 0 || messageStatus === "streaming";
@@ -114,13 +110,7 @@ export default function CustomTextArea({
       </div>
       <div className="flex justify-between items-center pt-2 bg-black pb-4">
         <h1 className="text-xs text-neutral-500">Shift + Enter to break</h1>
-        {isFree && products && products.pro && (
-          <CheckoutLink polarApi={api.polar} productIds={[products.pro.id]}>
-            <h1 className="text-xs text-purple-400 font-mono font-semibold tracking-wider">
-              UPGRADE
-            </h1>
-          </CheckoutLink>
-        )}
+        <h1 className="text-xs text-purple-400 font-mono font-semibold tracking-wider">UPGRADE</h1>
       </div>
     </div>
   );

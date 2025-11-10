@@ -29,7 +29,7 @@ export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const threadFromPath = pathname.split("/").pop();
-  const user = useQuery(api.currentUser.getCurrentUser);
+  const user = useQuery(api.auth.getCurrentUser);
   const userId = user?._id;
 
   const threads = useQuery(api.agentInteractions.allThreads, {
@@ -126,11 +126,6 @@ export function AppSidebar() {
                 <AiOutlineRollback />
                 Log Out
               </button>
-
-              <CustomerPortalLink polarApi={api.polar} className="flex items-center gap-2">
-                <AiOutlineReload />
-                Manage Subscription
-              </CustomerPortalLink>
             </PopoverContent>
           </Popover>
         </div>
