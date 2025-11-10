@@ -55,7 +55,6 @@ export default function Message({
     const comparisonResponse = messageBiases?.find((m) => m.messageId === id)?.comparisonResponse;
     if (comparisonResponse) return;
     // Generate a comparison response and update in db
-    console.log("Generating comparison response...");
     generateComparison({ threadId: threadId, messageId: id, messageText: text });
   };
 

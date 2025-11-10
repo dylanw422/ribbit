@@ -53,7 +53,6 @@ export function AppSidebar() {
     const result = await customerPortal({
       send_email: false,
     });
-    console.log("customerPortal:", result);
     window.location.href = result.portal_url;
   };
 
@@ -135,13 +134,15 @@ export function AppSidebar() {
                 <AiOutlineRollback />
                 Log Out
               </button>
-              <button
-                onClick={createCustomerPortal}
-                className="flex items-center gap-2 cursor-pointer"
-              >
-                <AiOutlineReload />
-                Manage Subscription
-              </button>
+              {user?.pro && (
+                <button
+                  onClick={createCustomerPortal}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <AiOutlineReload />
+                  Manage Subscription
+                </button>
+              )}
             </PopoverContent>
           </Popover>
         </div>

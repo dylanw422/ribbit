@@ -1,8 +1,8 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { internalMutation, mutation } from "./_generated/server";
 import { api } from "./_generated/api";
 
-export const createSubscription = mutation({
+export const createSubscription = internalMutation({
   args: {
     userId: v.string(),
     dodoId: v.string(),
@@ -19,6 +19,23 @@ export const createSubscription = mutation({
       customerEmail: args.customerEmail,
       status: args.status,
       webhookPayload: args.webhookPayload,
+    });
+  },
+});
+
+export const cancelSubscription = internalMutation({
+  args: {
+    dodoId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const subs = await ctx.db
+      .query("subscriptions")
+      .filter((q) => q.eq(q.field("dodoId"), args.dodoId))
+      .unique();
+
+    if (!subs) return;
+    const updatedSub = await ctx.db.patch(subs._id, {
+      status: "cancelled",
     });
   },
 });

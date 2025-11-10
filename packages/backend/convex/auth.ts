@@ -41,13 +41,6 @@ export const getCurrentUser = query({
 
     const isPro = userSubscriptions?.status === "active";
 
-    const userData = {
-      ...currentUser,
-      pro: isPro,
-    };
-
-    console.log("userData", userData);
-
     return { ...currentUser, pro: isPro };
   },
 });

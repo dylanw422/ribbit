@@ -118,7 +118,7 @@ export default function CustomTextArea({
         {!isPro && (
           <button
             onClick={handleCheckout}
-            className="text-xs text-purple-400 font-mono font-semibold tracking-wider"
+            className="text-xs text-purple-400 font-mono font-semibold tracking-wider hover:cursor-pointer"
           >
             UPGRADE
           </button>

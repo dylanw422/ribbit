@@ -100,8 +100,6 @@ export const generateComparisonResponse = action({
       contextMessages = searchResults.entries
         .map((entry) => ({ role: "system", content: entry.text }))
         .filter((msg) => !!msg.content);
-
-      console.log("contextMessages", contextMessages);
     }
 
     const result = await agent.generateText(

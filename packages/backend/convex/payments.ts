@@ -41,7 +41,6 @@ export const getCustomerPortal = action({
   handler: async (ctx, args) => {
     try {
       const portal = await customerPortal(ctx, args);
-      console.log("portal", portal);
       if (!portal?.portal_url) {
         throw new Error("Customer portal did not return a portal_url");
       }
